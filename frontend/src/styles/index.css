@@ -1,0 +1,134 @@
+@import './tokens.css';
+@import './resume.css';
+@import './print.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Visible focus everywhere, but only for keyboard users. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-foreground font-semibold tracking-tight;
+  }
+
+  ::selection {
+    background: var(--color-accent-subtle);
+    color: var(--color-foreground);
+  }
+
+  ::placeholder {
+    @apply text-muted-foreground/70;
+  }
+
+  /* Slim, unobtrusive scrollbars in scroll panes. */
+  .scroll-area {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-strong) transparent;
+  }
+
+  .scroll-area::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scroll-area::-webkit-scrollbar-thumb {
+    background-color: var(--color-border-strong);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+
+  .scroll-area::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer components {
+  /* Shared surface treatment: subtle border, no heavy shadow. */
+  .surface-card {
+    @apply bg-surface border border-border rounded-xl;
+  }
+
+  .surface-inset {
+    @apply bg-surface-sunken border border-border rounded-lg;
+  }
+
+  /* Skeleton shimmer used by every loading state. */
+  .skeleton {
+    @apply relative overflow-hidden bg-muted rounded-md;
+  }
+
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 animate-shimmer;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(var(--color-surface) / 0.65),
+      transparent
+    );
+    transform: translateX(-100%);
+  }
+
+  .link-underline {
+    @apply underline decoration-border-strong decoration-1 underline-offset-4 hover:decoration-foreground transition-colors;
+  }
+
+  /* Accessible skip target for keyboard and screen-reader users. */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-toast
+      focus:rounded-md focus:bg-surface focus:px-4 focus:py-2 focus:shadow-lg;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .grid-dots {
+    background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+}
+
+/* Honour the OS motion preference across every animation and transition. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

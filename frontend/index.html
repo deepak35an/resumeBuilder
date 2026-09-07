@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0c0f15" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <title>ResumeForge - ATS Resume Builder, Checker and Job Matcher</title>
+    <meta
+      name="description"
+      content="Build an ATS-friendly resume, check how applicant tracking systems may read it, and tailor it to any job description. Free ATS resume builder with 44 templates."
+    />
+    <link rel="canonical" href="http://localhost:5173/" />
+
+    <!--
+      Pre-paint theme resolution: reads the stored preference before React
+      mounts so there is no flash of the wrong theme.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('resumeforge.theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+        } catch (error) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      ResumeForge needs JavaScript to build and preview resumes. Please enable JavaScript, or read
+      our resume guides at /blog.
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,92 @@
+"""Canonical template metadata used by the API and the seeder."""
+
+from __future__ import annotations
+
+from typing import Any
+
+# Must stay aligned with frontend/src/features/resume/templates/registry.tsx
+TEMPLATES: list[dict[str, Any]] = [
+    {"slug": "classic-ats", "name": "Classic ATS", "category": "ats", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": True, "industries": ["any"], "experience_levels": ["student", "fresher", "1-3", "3-5", "5-10", "10+"], "badges": ["ATS SAFE", "MOST POPULAR"], "popularity": 100, "description": "Single column, conservative type and clear section rules."},
+    {"slug": "classic-professional", "name": "Classic Professional", "category": "ats", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": True, "industries": ["finance", "consulting"], "experience_levels": ["1-3", "3-5", "5-10"], "badges": ["ATS SAFE"], "popularity": 92, "description": "Parse-safe stack with plain headings and extra space."},
+    {"slug": "ats-standard", "name": "ATS Standard", "category": "ats", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["any"], "experience_levels": ["fresher", "1-3", "3-5"], "badges": ["ATS SAFE"], "popularity": 88, "description": "Boxed titles and a left-aligned header for high-volume applications."},
+    {"slug": "modern-ats", "name": "Modern ATS", "category": "ats", "layout": "single-column", "style": "modern", "ats_rating": 5, "is_premium": False, "is_recommended": True, "industries": ["tech", "product"], "experience_levels": ["1-3", "3-5", "5-10"], "badges": ["ATS SAFE", "MODERN"], "popularity": 96, "description": "Parse-safe structure with an accent bar and more air."},
+    {"slug": "centered-classic", "name": "Centered Classic", "category": "ats", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["academia", "public"], "experience_levels": ["student", "fresher", "1-3"], "badges": ["ATS SAFE"], "popularity": 74, "description": "Centred name and contact line above a traditional column."},
+    {"slug": "clean-ats", "name": "ATS Clean", "category": "ats", "layout": "single-column", "style": "minimal", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["any"], "experience_levels": ["fresher", "1-3"], "badges": ["ATS SAFE", "MINIMAL"], "popularity": 80, "description": "Very quiet headings and generous whitespace."},
+    {"slug": "simple-ats", "name": "ATS Simple", "category": "ats", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["any"], "experience_levels": ["student", "fresher"], "badges": ["ATS SAFE"], "popularity": 70, "description": "The most conservative single-column layout."},
+    {"slug": "ats-compact", "name": "ATS Executive", "category": "ats", "layout": "single-column", "style": "executive", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["executive"], "experience_levels": ["5-10", "10+"], "badges": ["ATS SAFE", "EXECUTIVE"], "popularity": 68, "description": "Tighter spacing for experienced professionals who need one page."},
+    {"slug": "traditional-ats", "name": "ATS Corporate", "category": "ats", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["corporate"], "experience_levels": ["3-5", "5-10", "10+"], "badges": ["ATS SAFE"], "popularity": 72, "description": "Traditional corporate hierarchy and ruled headings."},
+    {"slug": "ats-minimal", "name": "ATS Minimal", "category": "ats", "layout": "single-column", "style": "minimal", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["any"], "experience_levels": ["1-3", "3-5"], "badges": ["ATS SAFE", "MINIMAL"], "popularity": 77, "description": "Almost no decoration — just type and rules."},
+    {"slug": "tech-skills-forward", "name": "Software Engineer", "category": "tech", "layout": "two-column", "style": "tech", "ats_rating": 4, "is_premium": False, "is_recommended": True, "industries": ["software"], "experience_levels": ["1-3", "3-5", "5-10"], "badges": ["BEST FOR TECH"], "popularity": 94, "description": "Skills-forward two-column layout for engineers."},
+    {"slug": "tech-stack", "name": "Developer", "category": "tech", "layout": "single-column", "style": "tech", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["software"], "experience_levels": ["fresher", "1-3"], "badges": ["BEST FOR TECH"], "popularity": 81, "description": "Stack listed as plain text above experience."},
+    {"slug": "engineer-compact", "name": "Full Stack Developer", "category": "tech", "layout": "single-column", "style": "tech", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["software"], "experience_levels": ["1-3", "3-5"], "badges": ["BEST FOR TECH"], "popularity": 83, "description": "Compact engineer layout emphasising projects and stack."},
+    {"slug": "systems-engineer", "name": "Backend Developer", "category": "tech", "layout": "single-column", "style": "tech", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["software"], "experience_levels": ["3-5", "5-10"], "badges": ["BEST FOR TECH"], "popularity": 76, "description": "Systems-oriented headings and conservative type."},
+    {"slug": "data-focused", "name": "Data Scientist", "category": "tech", "layout": "two-column", "style": "tech", "ats_rating": 4, "is_premium": True, "is_recommended": True, "industries": ["data"], "experience_levels": ["1-3", "3-5", "5-10"], "badges": ["BEST FOR TECH", "PRO"], "popularity": 85, "description": "Room for methods, tools and publications."},
+    {"slug": "full-stack", "name": "Frontend Developer", "category": "tech", "layout": "single-column", "style": "modern", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["software"], "experience_levels": ["fresher", "1-3", "3-5"], "badges": ["BEST FOR TECH"], "popularity": 82, "description": "Product-facing engineering with projects first."},
+    {"slug": "devops-split", "name": "DevOps Engineer", "category": "tech", "layout": "two-column", "style": "tech", "ats_rating": 4, "is_premium": True, "is_recommended": False, "industries": ["devops"], "experience_levels": ["3-5", "5-10"], "badges": ["PRO"], "popularity": 71, "description": "Tools and platforms beside delivery history."},
+    {"slug": "cloud-architect", "name": "Cloud Engineer", "category": "tech", "layout": "single-column", "style": "tech", "ats_rating": 5, "is_premium": True, "is_recommended": False, "industries": ["cloud"], "experience_levels": ["3-5", "5-10", "10+"], "badges": ["PRO"], "popularity": 69, "description": "Certifications and platforms in a conservative column."},
+    {"slug": "backend-column", "name": "Data Engineer", "category": "tech", "layout": "single-column", "style": "tech", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["data"], "experience_levels": ["1-3", "3-5"], "badges": ["BEST FOR TECH"], "popularity": 73, "description": "Pipelines and storage systems as first-class content."},
+    {"slug": "frontend-modern", "name": "Machine Learning Engineer", "category": "tech", "layout": "single-column", "style": "modern", "ats_rating": 5, "is_premium": True, "is_recommended": False, "industries": ["ml"], "experience_levels": ["3-5", "5-10"], "badges": ["PRO"], "popularity": 70, "description": "Research-adjacent engineering without decorative charts."},
+    {"slug": "security-analyst", "name": "Cybersecurity Engineer", "category": "tech", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["security"], "experience_levels": ["1-3", "3-5", "5-10"], "badges": ["BEST FOR TECH"], "popularity": 66, "description": "Certifications and incident work kept as text."},
+    {"slug": "platform-engineer", "name": "QA Engineer", "category": "tech", "layout": "two-column", "style": "tech", "ats_rating": 4, "is_premium": False, "is_recommended": False, "industries": ["qa"], "experience_levels": ["fresher", "1-3", "3-5"], "badges": [], "popularity": 64, "description": "Test strategy beside tools and environments."},
+    {"slug": "executive-brief", "name": "Business Professional", "category": "business", "layout": "single-column", "style": "executive", "ats_rating": 5, "is_premium": False, "is_recommended": True, "industries": ["business"], "experience_levels": ["5-10", "10+"], "badges": ["EXECUTIVE"], "popularity": 78, "description": "Strong typography for leadership resumes."},
+    {"slug": "consulting-clean", "name": "Business Analyst", "category": "business", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["consulting"], "experience_levels": ["1-3", "3-5"], "badges": [], "popularity": 75, "description": "Clean consulting layout with measurable outcomes."},
+    {"slug": "corporate-formal", "name": "Product Manager", "category": "business", "layout": "single-column", "style": "modern", "ats_rating": 5, "is_premium": False, "is_recommended": True, "industries": ["product"], "experience_levels": ["3-5", "5-10"], "badges": [], "popularity": 86, "description": "Product narrative with impact-first bullets."},
+    {"slug": "finance-conservative", "name": "Finance Professional", "category": "business", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["finance"], "experience_levels": ["1-3", "3-5", "5-10"], "badges": ["ATS SAFE"], "popularity": 67, "description": "Conservative finance formatting."},
+    {"slug": "operations-manager", "name": "Operations Manager", "category": "business", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["operations"], "experience_levels": ["3-5", "5-10", "10+"], "badges": [], "popularity": 61, "description": "Operations and process improvement emphasis."},
+    {"slug": "leadership-banner", "name": "Project Manager", "category": "business", "layout": "single-column", "style": "executive", "ats_rating": 4, "is_premium": True, "is_recommended": False, "industries": ["project"], "experience_levels": ["3-5", "5-10", "10+"], "badges": ["PRO", "EXECUTIVE"], "popularity": 72, "description": "Banner header with delivery-focused sections."},
+    {"slug": "board-ready", "name": "Marketing Professional", "category": "business", "layout": "single-column", "style": "modern", "ats_rating": 5, "is_premium": True, "is_recommended": False, "industries": ["marketing"], "experience_levels": ["3-5", "5-10"], "badges": ["PRO"], "popularity": 63, "description": "Campaign and growth work without graphics."},
+    {"slug": "mba-professional", "name": "Sales Professional", "category": "business", "layout": "single-column", "style": "classic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["sales"], "experience_levels": ["1-3", "3-5", "5-10"], "badges": [], "popularity": 60, "description": "Quota and territory history as text."},
+    {"slug": "campus-first", "name": "Graduate", "category": "student", "layout": "single-column", "style": "student", "ats_rating": 5, "is_premium": False, "is_recommended": True, "industries": ["campus"], "experience_levels": ["student", "fresher"], "badges": ["BEST FOR FRESHERS"], "popularity": 90, "description": "Education and projects before limited work history."},
+    {"slug": "internship-ready", "name": "Internship", "category": "student", "layout": "single-column", "style": "student", "ats_rating": 5, "is_premium": False, "is_recommended": True, "industries": ["campus"], "experience_levels": ["student"], "badges": ["BEST FOR FRESHERS"], "popularity": 84, "description": "Internships, coursework and campus leadership."},
+    {"slug": "education-first", "name": "College Student", "category": "student", "layout": "single-column", "style": "student", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["campus"], "experience_levels": ["student"], "badges": ["BEST FOR FRESHERS"], "popularity": 79, "description": "Education-first, one-page friendly."},
+    {"slug": "fresher-compact", "name": "Fresher", "category": "student", "layout": "single-column", "style": "student", "ats_rating": 5, "is_premium": False, "is_recommended": True, "industries": ["campus"], "experience_levels": ["fresher"], "badges": ["BEST FOR FRESHERS"], "popularity": 91, "description": "Projects and skills for a first full-time role."},
+    {"slug": "academic-simple", "name": "Academic", "category": "student", "layout": "single-column", "style": "academic", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["academia"], "experience_levels": ["student", "1-3"], "badges": [], "popularity": 58, "description": "Publications and research as first-class sections."},
+    {"slug": "new-grad", "name": "Entry Level", "category": "student", "layout": "single-column", "style": "student", "ats_rating": 5, "is_premium": False, "is_recommended": False, "industries": ["campus"], "experience_levels": ["fresher", "1-3"], "badges": ["BEST FOR FRESHERS"], "popularity": 80, "description": "New-grad layout with internships and projects."},
+    {"slug": "scholar-profile", "name": "Student Projects", "category": "student", "layout": "two-column", "style": "student", "ats_rating": 4, "is_premium": False, "is_recommended": False, "industries": ["campus"], "experience_levels": ["student"], "badges": [], "popularity": 62, "description": "Projects column beside coursework."},
+    {"slug": "sidebar-slate", "name": "Modern Minimal", "category": "creative", "layout": "sidebar-left", "style": "creative", "ats_rating": 3, "is_premium": False, "is_recommended": False, "industries": ["product", "design"], "experience_levels": ["1-3", "3-5"], "badges": ["MODERN"], "popularity": 87, "description": "Tinted sidebar. ATS Compatibility: Good."},
+    {"slug": "bold-header", "name": "Bold Header", "category": "creative", "layout": "single-column", "style": "creative", "ats_rating": 4, "is_premium": True, "is_recommended": False, "industries": ["design", "marketing"], "experience_levels": ["1-3", "3-5"], "badges": ["CREATIVE", "PRO"], "popularity": 65, "description": "Strong header, still plain-text underneath. ATS Compatibility: Good."},
+    {"slug": "modern-split", "name": "Professional Split", "category": "creative", "layout": "two-column", "style": "modern", "ats_rating": 3, "is_premium": True, "is_recommended": False, "industries": ["product"], "experience_levels": ["3-5", "5-10"], "badges": ["MODERN", "PRO"], "popularity": 68, "description": "Split layout. ATS Compatibility: Good."},
+    {"slug": "creative-banner", "name": "Contemporary", "category": "creative", "layout": "single-column", "style": "creative", "ats_rating": 4, "is_premium": True, "is_recommended": False, "industries": ["design"], "experience_levels": ["1-3", "3-5"], "badges": ["CREATIVE", "PRO"], "popularity": 59, "description": "Banner header with readable body text."},
+    {"slug": "portfolio-sidebar", "name": "Clean Sidebar", "category": "creative", "layout": "sidebar-left", "style": "creative", "ats_rating": 3, "is_premium": True, "is_recommended": False, "industries": ["design"], "experience_levels": ["1-3", "3-5"], "badges": ["CREATIVE", "PRO"], "popularity": 64, "description": "Sidebar contact and skills. ATS Compatibility: Good."},
+    {"slug": "designer-right", "name": "Elegant", "category": "creative", "layout": "sidebar-right", "style": "creative", "ats_rating": 3, "is_premium": True, "is_recommended": False, "industries": ["design"], "experience_levels": ["3-5", "5-10"], "badges": ["CREATIVE", "PRO"], "popularity": 57, "description": "Right sidebar. ATS Compatibility: Good."},
+    {"slug": "editorial-column", "name": "Modern Executive", "category": "creative", "layout": "single-column", "style": "executive", "ats_rating": 4, "is_premium": True, "is_recommended": False, "industries": ["executive"], "experience_levels": ["5-10", "10+"], "badges": ["EXECUTIVE", "PRO"], "popularity": 55, "description": "Editorial hierarchy for senior operators."},
+]
+
+
+def to_api(row: Any) -> dict[str, Any]:
+    if isinstance(row, dict):
+        return {
+            "id": row.get("id") or row["slug"],
+            "slug": row["slug"],
+            "name": row["name"],
+            "category": row["category"],
+            "description": row["description"],
+            "atsRating": row["ats_rating"],
+            "layout": row["layout"],
+            "style": row.get("style", "classic"),
+            "isPremium": row["is_premium"],
+            "isRecommended": row.get("is_recommended", False),
+            "industries": row.get("industries") or [],
+            "experienceLevels": row.get("experience_levels") or [],
+            "badges": row.get("badges") or [],
+            "popularity": row.get("popularity") or 0,
+            "templateConfig": row.get("template_config") or {},
+        }
+    return {
+        "id": str(row.id),
+        "slug": row.slug,
+        "name": row.name,
+        "category": row.category,
+        "description": row.description,
+        "atsRating": row.ats_rating,
+        "layout": row.layout,
+        "style": row.style,
+        "isPremium": row.is_premium,
+        "isRecommended": row.is_recommended,
+        "industries": row.industries or [],
+        "experienceLevels": row.experience_levels or [],
+        "badges": row.badges or [],
+        "popularity": row.popularity,
+        "templateConfig": row.template_config or {},
+        "isActive": row.is_active,
+    }

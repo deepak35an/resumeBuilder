@@ -1,0 +1,274 @@
+/**
+ * Resume canvas.
+ *
+ * The rendered resume is real, selectable HTML text - never an image. Sizes are
+ * physical (mm / in) so what appears on screen matches the exported PDF. These
+ * styles are intentionally isolated from the app theme: a resume stays black on
+ * white even when the application is in dark mode.
+ *
+ * Per-resume settings arrive as inline custom properties on `.resume-document`
+ * (see `buildResumeStyle` in `src/lib/resume-style.ts`).
+ */
+
+.resume-viewport {
+  --resume-zoom: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.resume-document {
+  /* Defaults; overridden per resume by inline custom properties. */
+  --resume-font-family: 'Inter', Arial, Helvetica, sans-serif;
+  --resume-font-size: 10.5pt;
+  --resume-line-height: 1.4;
+  --resume-heading-scale: 1;
+  --resume-accent: #111827;
+  --resume-ink: #111111;
+  --resume-muted: #4b5563;
+  --resume-rule: #d1d5db;
+  --resume-section-gap: 12pt;
+  --resume-entry-gap: 8pt;
+  --resume-page-padding: 16mm;
+  --resume-page-width: 210mm;
+  --resume-page-height: 297mm;
+
+  font-family: var(--resume-font-family);
+  font-size: var(--resume-font-size);
+  line-height: var(--resume-line-height);
+  color: var(--resume-ink);
+}
+
+/* One physical page. Multiple pages stack vertically in the preview. */
+.resume-page {
+  position: relative;
+  width: var(--resume-page-width);
+  min-height: var(--resume-page-height);
+  padding: var(--resume-page-padding);
+  background: #ffffff;
+  color: var(--resume-ink);
+  box-shadow: 0 1px 3px rgba(12, 15, 21, 0.08), 0 12px 32px rgba(12, 15, 21, 0.1);
+  overflow: hidden;
+}
+
+.resume-page--zoom {
+  transform: scale(var(--resume-zoom));
+  transform-origin: top center;
+}
+
+/* Page boundary indicator in the editor preview. */
+.resume-page__boundary {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed #c7cdd8;
+  pointer-events: none;
+}
+
+.resume-page__number {
+  position: absolute;
+  right: 6mm;
+  bottom: 4mm;
+  font-size: 7pt;
+  color: #9aa3b2;
+  letter-spacing: 0.04em;
+}
+
+/* --- Shared primitives ---------------------------------------------------- */
+
+.resume-name {
+  font-size: calc(var(--resume-font-size) * 2 * var(--resume-heading-scale));
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--resume-accent);
+}
+
+.resume-role {
+  font-size: calc(var(--resume-font-size) * 1.15);
+  font-weight: 500;
+  color: var(--resume-muted);
+}
+
+.resume-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8pt;
+  font-size: calc(var(--resume-font-size) * 0.92);
+  color: var(--resume-muted);
+}
+
+.resume-contact a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.resume-contact__sep {
+  color: var(--resume-rule);
+}
+
+.resume-section {
+  margin-top: var(--resume-section-gap);
+  /* Never leave a heading stranded at the foot of a page. */
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.resume-section:first-child {
+  margin-top: 0;
+}
+
+.resume-section__title {
+  font-size: calc(var(--resume-font-size) * 1.02 * var(--resume-heading-scale));
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--resume-accent);
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.resume-section__title--uppercase {
+  text-transform: uppercase;
+}
+
+.resume-section__rule {
+  border: 0;
+  border-top: 0.75pt solid var(--resume-rule);
+  margin: 3pt 0 6pt;
+}
+
+.resume-entry {
+  margin-top: var(--resume-entry-gap);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.resume-entry:first-of-type {
+  margin-top: 4pt;
+}
+
+.resume-entry__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8pt;
+}
+
+.resume-entry__title {
+  font-weight: 700;
+}
+
+.resume-entry__subtitle {
+  color: var(--resume-muted);
+}
+
+.resume-entry__meta {
+  font-size: calc(var(--resume-font-size) * 0.92);
+  color: var(--resume-muted);
+  white-space: nowrap;
+}
+
+.resume-bullets {
+  margin: 3pt 0 0;
+  padding-left: 12pt;
+  list-style: none;
+}
+
+.resume-bullets > li {
+  position: relative;
+  margin-top: 2pt;
+  /* Widow/orphan control so a bullet does not split across pages. */
+  break-inside: avoid;
+  page-break-inside: avoid;
+  orphans: 2;
+  widows: 2;
+}
+
+.resume-bullets > li::before {
+  content: var(--resume-bullet, '\2022');
+  position: absolute;
+  left: -12pt;
+  color: var(--resume-muted);
+}
+
+.resume-skills__row {
+  display: flex;
+  gap: 4pt;
+  margin-top: 2.5pt;
+  break-inside: avoid;
+}
+
+.resume-skills__label {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.resume-inline-list {
+  color: var(--resume-ink);
+}
+
+.resume-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6pt;
+}
+
+/* Two-column and sidebar layouts. Flagged in the UI as slightly less
+   parseable than a single column - never as "not ATS compatible". */
+.resume-columns {
+  display: grid;
+  gap: var(--resume-column-gap, 14pt);
+}
+
+.resume-columns--sidebar-left {
+  grid-template-columns: var(--resume-sidebar-width, 32%) 1fr;
+}
+
+.resume-columns--sidebar-right {
+  grid-template-columns: 1fr var(--resume-sidebar-width, 32%);
+}
+
+.resume-columns--even {
+  grid-template-columns: 1fr 1fr;
+}
+
+.resume-sidebar {
+  padding-right: 10pt;
+}
+
+.resume-sidebar--tinted {
+  background: var(--resume-sidebar-bg, #f4f5f7);
+  margin: calc(-1 * var(--resume-page-padding)) 0 calc(-1 * var(--resume-page-padding))
+    calc(-1 * var(--resume-page-padding));
+  padding: var(--resume-page-padding) 10pt var(--resume-page-padding) var(--resume-page-padding);
+}
+
+.resume-header--banner {
+  background: var(--resume-accent);
+  color: #ffffff;
+  margin: calc(-1 * var(--resume-page-padding)) calc(-1 * var(--resume-page-padding)) 0;
+  padding: calc(var(--resume-page-padding) * 0.75) var(--resume-page-padding);
+}
+
+.resume-header--banner .resume-name,
+.resume-header--banner .resume-role,
+.resume-header--banner .resume-contact,
+.resume-header--banner .resume-contact__sep {
+  color: #ffffff;
+}
+
+/* Mini previews used on the templates gallery and landing page. Scaled with a
+   transform so the same components render at any size without a screenshot. */
+.resume-thumb {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.resume-thumb__inner {
+  transform-origin: top left;
+  pointer-events: none;
+}

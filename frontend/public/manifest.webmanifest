@@ -1,0 +1,17 @@
+{
+  "name": "ResumeForge - ATS Resume Builder",
+  "short_name": "ResumeForge",
+  "description": "Build an ATS-friendly resume, check it, and tailor it to any job description.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f8f9fb",
+  "theme_color": "#0c0f15",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

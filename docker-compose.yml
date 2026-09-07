@@ -1,0 +1,103 @@
+# ResumeForge - full stack.
+#
+#   docker compose up -d postgres        # database only (local dev)
+#   docker compose up --build            # whole stack on http://localhost:8080
+#   docker compose --profile pdf up -d   # API image that includes Chromium for PDF
+#
+# No Redis: nothing in the application requires it.
+
+name: resumeforge
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-resumeforge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-resumeforge}
+      POSTGRES_DB: ${POSTGRES_DB:-resumeforge}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-resumeforge} -d ${POSTGRES_DB:-resumeforge}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+      target: runtime
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-resumeforge}:${POSTGRES_PASSWORD:-resumeforge}@postgres:5432/${POSTGRES_DB:-resumeforge}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      DEBUG: ${DEBUG:-false}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      SITE_URL: ${SITE_URL:-http://localhost:8080}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_PROVIDER: ${AI_PROVIDER:-auto}
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-console}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-noop}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@resumeforge.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-ChangeMe123!}
+      SEED_ON_START: ${SEED_ON_START:-true}
+    volumes:
+      - backend_storage:/app/storage
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+
+  # Same API plus Chromium, for PDF export with real selectable text.
+  backend-pdf:
+    profiles: ["pdf"]
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+      target: export
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-resumeforge}:${POSTGRES_PASSWORD:-resumeforge}@postgres:5432/${POSTGRES_DB:-resumeforge}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      SITE_URL: ${SITE_URL:-http://localhost:8080}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      SEED_ON_START: "false"
+    volumes:
+      - backend_storage:/app/storage
+    ports:
+      - "8001:8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+      args:
+        # Always relative so the browser talks to NGINX on :8080, which proxies /api.
+        # Do not bake VITE_API_URL from .env (that points at :8000 for local Vite).
+        VITE_API_URL: /api
+        VITE_SITE_URL: ${SITE_URL:-http://localhost:8080}
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
+  backend_storage:

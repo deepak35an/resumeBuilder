@@ -1,0 +1,116 @@
+/**
+ * Print styles.
+ *
+ * Used both when a user prints from the browser and when the server renders a
+ * PDF via Chromium. Everything that is not the resume itself is removed, page
+ * margins come from the resume's own padding, and page breaks are respected.
+ */
+
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* No app chrome in printed output. */
+  [data-print='hide'],
+  header[data-app-header],
+  nav[data-app-nav],
+  aside[data-app-aside],
+  .app-toolbar,
+  .app-footer,
+  .toast-viewport,
+  button,
+  [role='dialog'],
+  [role='tooltip'] {
+    display: none !important;
+  }
+
+  /* Only the resume remains, at its natural size. */
+  .resume-viewport {
+    display: block !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  .resume-page {
+    box-shadow: none !important;
+    margin: 0 !important;
+    width: auto !important;
+    min-height: 0 !important;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .resume-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .resume-page--zoom {
+    transform: none !important;
+  }
+
+  .resume-page__boundary,
+  .resume-page__number {
+    display: none !important;
+  }
+
+  .resume-section__title {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .resume-entry,
+  .resume-bullets > li,
+  .resume-skills__row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Links keep their target text in print but stay unstyled in the resume. */
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}
+
+/**
+ * Server-side PDF rendering.
+ *
+ * The export service loads the resume in a headless Chromium with this class on
+ * <html>, which strips the on-screen page shadow and lets Chromium paginate.
+ */
+.pdf-render,
+.pdf-render body {
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+.pdf-render .resume-viewport {
+  display: block;
+  padding: 0;
+  gap: 0;
+}
+
+.pdf-render .resume-page {
+  box-shadow: none;
+  margin: 0;
+  width: auto;
+  min-height: 0;
+  break-after: page;
+}
+
+.pdf-render .resume-page:last-child {
+  break-after: auto;
+}
+
+.pdf-render .resume-page__boundary,
+.pdf-render .resume-page__number {
+  display: none;
+}

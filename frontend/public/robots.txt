@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Private application surfaces: nothing here is useful to a crawler and
+# resumes must never be indexed.
+Disallow: /dashboard
+Disallow: /resume/
+Disallow: /settings
+Disallow: /admin
+Disallow: /onboarding
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+
+Sitemap: http://localhost:5173/sitemap.xml
