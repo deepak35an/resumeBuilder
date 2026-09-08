@@ -115,9 +115,9 @@ export function ResumeContactStack({ personal }: { personal: PersonalInfo }) {
   const contacts = contactLine(personal);
   if (contacts.length === 0) return null;
   return (
-    <div style={{ display: 'grid', gap: '2pt' }}>
+    <div className="resume-contact-grid">
       {contacts.map((entry, index) => (
-        <span key={`${entry}-${index}`} style={{ fontSize: 'calc(var(--resume-font-size) * 0.9)', color: 'var(--resume-muted)', wordBreak: 'break-word' }}>
+        <span key={`${entry}-${index}`} className="resume-contact-grid__item">
           {displayUrl(entry)}
         </span>
       ))}

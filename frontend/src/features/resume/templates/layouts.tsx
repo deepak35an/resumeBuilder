@@ -123,8 +123,23 @@ export function SidebarLayout({
     </aside>
   );
 
+  const header = (
+    <ResumeHeader
+      personal={data.personal}
+      settings={settings}
+      align={headerAlign}
+      variant={headerVariant}
+      hideContact={contactInSidebar}
+    />
+  );
+
+  // Banner headers span the page. A plain header belongs in the main column
+  // so a full-height sidebar does not cover the name.
+  const bannerHeader = headerVariant !== 'plain' && headerVariant !== 'ruled';
+
   const main = (
-    <div key="main">
+    <div key="main" className="resume-main">
+      {!bannerHeader && header}
       {inMain.map((section) => (
         <ResumeSectionBlock
           key={section.id}
@@ -138,16 +153,10 @@ export function SidebarLayout({
 
   return (
     <>
-      <ResumeHeader
-        personal={data.personal}
-        settings={settings}
-        align={headerAlign}
-        variant={headerVariant}
-        hideContact={contactInSidebar}
-      />
+      {bannerHeader && header}
       <div
-        className={`resume-columns resume-columns--sidebar-${side}`}
-        style={{ marginTop: '10pt', ['--resume-sidebar-width' as string]: sidebarWidth }}
+        className={`resume-columns resume-columns--sidebar-${side}${bannerHeader ? '' : ' resume-columns--flush'}`}
+        style={{ ['--resume-sidebar-width' as string]: sidebarWidth }}
       >
         {side === 'left' ? [sidebar, main] : [main, sidebar]}
       </div>
