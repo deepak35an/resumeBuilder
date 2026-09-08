@@ -1,6 +1,7 @@
 import {
   Briefcase,
   FileText,
+  Globe,
   Home,
   LogOut,
   Search,
@@ -9,7 +10,7 @@ import {
   Sparkles,
   User as UserIcon,
 } from 'lucide-react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 
 import { Logo } from '@/components/brand/Logo';
 import { Badge, ButtonLink, Dropdown } from '@/components/ui';
@@ -61,6 +62,13 @@ function UserMenu() {
           label: 'Settings',
           icon: <Settings />,
           onSelect: () => navigate('/settings'),
+        },
+        {
+          id: 'site',
+          label: 'Website',
+          icon: <Globe />,
+          separatorBefore: true,
+          onSelect: () => navigate('/'),
         },
         ...(user.role === 'admin'
           ? [
@@ -132,6 +140,14 @@ export function AppLayout() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-muted-foreground
+                transition-colors hover:text-foreground"
+            >
+              <Globe aria-hidden="true" className="h-4 w-4" />
+              <span className="hidden sm:inline">Website</span>
+            </Link>
             <button
               type="button"
               onClick={() => openPalette(true)}
