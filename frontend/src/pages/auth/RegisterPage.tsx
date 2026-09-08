@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { Seo } from '@/components/seo/Seo';
 import { Alert, Button, Checkbox, Field, Input } from '@/components/ui';
@@ -23,6 +23,8 @@ const strengthColors = [
 export default function RegisterPage() {
   const registerUser = useAuthStore((state) => state.register);
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const template = params.get('template');
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -47,7 +49,8 @@ export default function RegisterPage() {
         password: values.password,
         fullName: values.fullName,
       });
-      navigate('/onboarding', { replace: true });
+      const next = template ? `/onboarding?template=${encodeURIComponent(template)}` : '/onboarding';
+      navigate(next, { replace: true });
     } catch (error) {
       handle(error);
     }
@@ -143,7 +146,10 @@ export default function RegisterPage() {
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Already have an account?{' '}
-        <Link to="/login" className="font-medium text-foreground link-underline">
+        <Link
+          to={template ? `/login?template=${encodeURIComponent(template)}` : '/login'}
+          className="font-medium text-foreground link-underline"
+        >
           Sign in
         </Link>
       </p>

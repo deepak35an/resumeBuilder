@@ -45,7 +45,7 @@ export interface ResumeHeaderProps {
   personal: PersonalInfo;
   settings: ResumeSettings;
   align?: 'left' | 'center';
-  variant?: 'plain' | 'banner' | 'ruled';
+  variant?: 'plain' | 'banner' | 'ruled' | 'split' | 'dark-full' | 'accent-top';
   /** Sidebar layouts render contact details in the sidebar instead. */
   hideContact?: boolean;
 }
@@ -58,10 +58,35 @@ export function ResumeHeader({
 }: ResumeHeaderProps) {
   const contacts = contactLine(personal);
 
+  // Split header: two-panel layout (dark left name, light right contact)
+  if (variant === 'split') {
+    return (
+      <header className="resume-header--split">
+        <div className="resume-header__left">
+          <div className="resume-name">{personal.fullName || 'Your Name'}</div>
+          {personal.title && <div className="resume-role">{personal.title}</div>}
+        </div>
+        <div className="resume-header__right">
+          {contacts.length > 0 && (
+            <div className="resume-contact">
+              {contacts.map((entry, index) => (
+                <span key={`${entry}-${index}`}>
+                  <span>{displayUrl(entry)}</span>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header
       className={cn(
         variant === 'banner' && 'resume-header--banner',
+        variant === 'dark-full' && 'resume-header--dark-full',
+        variant === 'accent-top' && 'resume-header--accent-top',
         align === 'center' && 'text-center',
       )}
       style={variant === 'ruled' ? { borderBottom: '1pt solid var(--resume-rule)', paddingBottom: '6pt' } : undefined}
@@ -106,8 +131,8 @@ export interface ResumeSectionShellProps {
   title: string;
   settings: ResumeSettings;
   children: ReactNode;
-  /** `rule` draws a hairline under the heading; `bar` a short accent bar. */
-  headingStyle?: 'plain' | 'rule' | 'bar' | 'boxed';
+  /** Heading style: rule, bar, boxed, plus new styles. */
+  headingStyle?: 'plain' | 'rule' | 'bar' | 'boxed' | 'underline-accent' | 'dot-accent' | 'pill' | 'gradient-bar' | 'inline-rule';
   className?: string;
 }
 
@@ -118,29 +143,41 @@ export function ResumeSectionShell({
   headingStyle = 'rule',
   className,
 }: ResumeSectionShellProps) {
+  // Determine style and className for each heading type
+  const headingClassName = cn(
+    'resume-section__title',
+    settings.uppercaseHeadings && 'resume-section__title--uppercase',
+    headingStyle === 'underline-accent' && 'resume-section__title--underline-accent',
+    headingStyle === 'dot-accent' && 'resume-section__title--dot-accent',
+    headingStyle === 'pill' && 'resume-section__title--pill',
+    headingStyle === 'gradient-bar' && 'resume-section__title--gradient-bar',
+    headingStyle === 'inline-rule' && 'resume-section__title--inline-rule',
+  );
+
+  const headingInlineStyle =
+    headingStyle === 'boxed'
+      ? {
+          background: 'var(--resume-accent)',
+          color: '#ffffff',
+          padding: '2pt 4pt',
+        }
+      : headingStyle === 'bar'
+        ? { borderLeft: '3pt solid var(--resume-accent)', paddingLeft: '5pt' }
+        : undefined;
+
+  // Whether to show the old-style rule <hr>
+  const showRule = headingStyle === 'rule';
+  // Styles that have their own spacing built in
+  const hasOwnSpacing = ['underline-accent', 'dot-accent', 'pill', 'gradient-bar', 'inline-rule'].includes(headingStyle);
+
   return (
     <section className={cn('resume-section', className)}>
-      <h2
-        className={cn(
-          'resume-section__title',
-          settings.uppercaseHeadings && 'resume-section__title--uppercase',
-        )}
-        style={
-          headingStyle === 'boxed'
-            ? {
-                background: 'var(--resume-accent)',
-                color: '#ffffff',
-                padding: '2pt 4pt',
-              }
-            : headingStyle === 'bar'
-              ? { borderLeft: '3pt solid var(--resume-accent)', paddingLeft: '5pt' }
-              : undefined
-        }
-      >
+      <h2 className={headingClassName} style={headingInlineStyle}>
         {title}
       </h2>
-      {headingStyle === 'rule' && <hr className="resume-section__rule" />}
-      {headingStyle !== 'rule' && <div style={{ height: '4pt' }} />}
+      {showRule && <hr className="resume-section__rule" />}
+      {!showRule && !hasOwnSpacing && <div style={{ height: '4pt' }} />}
+      {hasOwnSpacing && <div style={{ height: '3pt' }} />}
       {children}
     </section>
   );

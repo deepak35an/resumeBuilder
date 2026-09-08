@@ -69,7 +69,7 @@ export const TEMPLATES: TemplateDefinition[] = [
     description:
       'A single column, conservative type and clear section rules. The safest choice when you know nothing about the employer.',
     bestFor: ['Any role', 'Large employers', 'Online applications'],
-    component: singleColumn({ headingStyle: 'rule' }),
+    component: singleColumn({ headingStyle: 'underline-accent' }),
   },
   {
     id: 'classic-professional',
@@ -80,9 +80,9 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'The same parse-safe stack as Classic ATS, with plain headings and a little more space between sections.',
+      'The same parse-safe stack as Classic ATS, with inline-rule headings and refined spacing for a modern feel.',
     bestFor: ['Corporate roles', 'Finance', 'Consulting'],
-    component: singleColumn({ headingStyle: 'plain' }),
+    component: singleColumn({ headingStyle: 'inline-rule' }),
   },
   {
     id: 'ats-standard',
@@ -106,10 +106,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'The same parse-safe structure as Classic, with an accent bar beside each heading and slightly more air.',
+      'Gradient-bar headings with a subtle colour wash. Modern presence while staying fully parseable.',
     bestFor: ['Any role', 'Tech and product', 'Design-aware employers'],
     settingsDefaults: { accentColor: '#4f46e5' },
-    component: singleColumn({ headingStyle: 'bar' }),
+    component: singleColumn({ headingStyle: 'gradient-bar' }),
   },
   {
     id: 'centered-classic',
@@ -120,9 +120,9 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'A centred name and contact line above a traditional single column. Reads well when printed.',
+      'A centred name and contact line above a traditional single column with dot-accent headings.',
     bestFor: ['Academia', 'Public sector', 'Printed applications'],
-    component: singleColumn({ headingStyle: 'rule', headerAlign: 'center', headerVariant: 'ruled' }),
+    component: singleColumn({ headingStyle: 'dot-accent', headerAlign: 'center', headerVariant: 'ruled' }),
   },
   {
     id: 'clean-ats',
@@ -133,9 +133,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Minimal chrome: plain headings, a banner name block, and nothing a parser has to skip.',
+      'Minimal chrome with an accent-top header and underline-accent headings. Clean, modern, professional.',
     bestFor: ['Early career', 'Career changes', 'Straightforward roles'],
-    component: singleColumn({ headingStyle: 'plain', headerVariant: 'banner' }),
+    settingsDefaults: { accentColor: '#0f766e' },
+    component: singleColumn({ headingStyle: 'underline-accent', headerVariant: 'accent-top' }),
   },
   {
     id: 'simple-ats',
@@ -159,10 +160,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Tighter type and boxed headings for experienced candidates who need more history on one page.',
+      'Tighter type and gradient-bar headings for experienced candidates who need more history on one page.',
     bestFor: ['Senior IC roles', 'Longer work history', 'Dense skill lists'],
-    settingsDefaults: { fontSize: 10, sectionSpacing: 0.85 },
-    component: singleColumn({ headingStyle: 'boxed' }),
+    settingsDefaults: { fontSize: 10, sectionSpacing: 0.85, accentColor: '#1e3a5f' },
+    component: singleColumn({ headingStyle: 'gradient-bar' }),
   },
   {
     id: 'traditional-ats',
@@ -186,10 +187,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'A centred ruled header and bar headings. Still a single column — still safe to upload anywhere.',
+      'A centred ruled header and inline-rule headings with a quiet accent line. Minimal yet striking.',
     bestFor: ['Any role', 'Online applications', 'Template-averse employers'],
     settingsDefaults: { accentColor: '#111827' },
-    component: singleColumn({ headingStyle: 'bar', headerAlign: 'center', headerVariant: 'ruled' }),
+    component: singleColumn({ headingStyle: 'inline-rule', headerAlign: 'center', headerVariant: 'ruled' }),
   },
 
   // --- Tech (12) -----------------------------------------------------------
@@ -202,12 +203,12 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Summary across the top, then experience beside a skills and certifications column. Good when the stack matters as much as the story.',
+      'Summary across the top, then experience beside a skills and certifications column with gradient-bar headings.',
     bestFor: ['Engineering', 'Data', 'IT operations'],
     settingsDefaults: { accentColor: '#0f766e' },
     component: twoColumn({
       rightSections: ['technical-skills', 'certifications', 'languages', 'courses'],
-      headingStyle: 'rule',
+      headingStyle: 'gradient-bar',
     }),
   },
   {
@@ -219,12 +220,12 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Bar headings and a skills-first right column. Built for roles that screen on languages and tools first.',
+      'Dot-accent headings and a skills-first right column. Built for roles that screen on languages and tools first.',
     bestFor: ['Backend', 'Platform', 'SRE'],
     settingsDefaults: { accentColor: '#0f766e' },
     component: twoColumn({
       rightSections: ['technical-skills', 'projects', 'certifications'],
-      headingStyle: 'bar',
+      headingStyle: 'dot-accent',
     }),
   },
   {
@@ -236,9 +237,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Single-column engineering resume with boxed headings. Safer than a split layout when the ATS is unknown.',
+      'Single-column engineering resume with pill headings. Safer than a split layout when the ATS is unknown.',
     bestFor: ['Software engineering', 'QA', 'Support engineering'],
-    component: singleColumn({ headingStyle: 'boxed' }),
+    settingsDefaults: { accentColor: '#1e3a5f' },
+    component: singleColumn({ headingStyle: 'pill' }),
   },
   {
     id: 'systems-engineer',
@@ -249,13 +251,14 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Left sidebar for skills, certs and languages. Main column keeps the systems work visible.',
+      'Dark left sidebar for skills, certs and languages. Main column keeps the systems work visible.',
     bestFor: ['Systems', 'Infrastructure', 'Networking'],
     settingsDefaults: { accentColor: '#1e3a5f' },
     component: sidebar({
       sidebarSections: ['technical-skills', 'certifications', 'languages'],
       side: 'left',
-      headingStyle: 'rule',
+      dark: true,
+      headingStyle: 'underline-accent',
     }),
   },
   {
@@ -272,7 +275,7 @@ export const TEMPLATES: TemplateDefinition[] = [
     settingsDefaults: { accentColor: '#0369a1' },
     component: twoColumn({
       rightSections: ['projects', 'technical-skills', 'education'],
-      headingStyle: 'plain',
+      headingStyle: 'underline-accent',
       fullWidthSections: ['summary'],
     }),
   },
@@ -285,14 +288,14 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Experience on the left, a tinted skills sidebar on the right. Reads as product-minded without losing the stack.',
+      'Experience on the left, a dark-tinted skills sidebar on the right. Reads as product-minded without losing the stack.',
     bestFor: ['Full-stack', 'Product engineering', 'Startups'],
     settingsDefaults: { accentColor: '#4338ca' },
     component: sidebar({
       sidebarSections: SKILLS_SIDE,
       side: 'right',
-      tinted: true,
-      headingStyle: 'bar',
+      darkTinted: true,
+      headingStyle: 'dot-accent',
     }),
   },
   {
@@ -309,7 +312,7 @@ export const TEMPLATES: TemplateDefinition[] = [
     settingsDefaults: { accentColor: '#0f172a' },
     component: twoColumn({
       rightSections: ['certifications', 'technical-skills', 'courses'],
-      headingStyle: 'boxed',
+      headingStyle: 'gradient-bar',
     }),
   },
   {
@@ -321,15 +324,15 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: true,
     description:
-      'Tinted left rail for certifications and skills. Banner header for a more senior presentation.',
+      'Dark left rail for certifications and skills. Dark-full header for a commanding senior presentation.',
     bestFor: ['Cloud', 'Architecture', 'Solutions engineering'],
     settingsDefaults: { accentColor: '#1d4ed8' },
     component: sidebar({
       sidebarSections: ['certifications', 'technical-skills', 'languages'],
       side: 'left',
-      tinted: true,
-      headingStyle: 'plain',
-      headerVariant: 'banner',
+      dark: true,
+      headingStyle: 'underline-accent',
+      headerVariant: 'dark-full',
     }),
   },
   {
@@ -341,11 +344,11 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Ruled headings and a certifications column. Built for API, data and service-ownership stories.',
+      'Inline-rule headings and a certifications column. Built for API, data and service-ownership stories.',
     bestFor: ['Backend', 'API', 'Data engineering'],
     component: twoColumn({
       rightSections: ['technical-skills', 'certifications', 'languages'],
-      headingStyle: 'rule',
+      headingStyle: 'inline-rule',
       headerAlign: 'left',
     }),
   },
@@ -358,10 +361,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Centred banner header and bar headings. Still a single column so design-aware teams and parsers both cope.',
+      'Centred accent-top header and pill headings. Still a single column so design-aware teams and parsers both cope.',
     bestFor: ['Frontend', 'Design systems', 'Web'],
     settingsDefaults: { accentColor: '#4f46e5' },
-    component: singleColumn({ headingStyle: 'bar', headerAlign: 'center', headerVariant: 'banner' }),
+    component: singleColumn({ headingStyle: 'pill', headerAlign: 'center', headerVariant: 'accent-top' }),
   },
   {
     id: 'security-analyst',
@@ -372,12 +375,13 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: true,
     description:
-      'Right sidebar for certs and skills. Conservative type for security, risk and compliance screens.',
+      'Dark right sidebar for certs and skills. Conservative type for security, risk and compliance screens.',
     bestFor: ['Security', 'GRC', 'SOC'],
     settingsDefaults: { accentColor: '#111827' },
     component: sidebar({
       sidebarSections: ['certifications', 'technical-skills', 'courses'],
       side: 'right',
+      dark: true,
       headingStyle: 'rule',
     }),
   },
@@ -395,7 +399,7 @@ export const TEMPLATES: TemplateDefinition[] = [
     settingsDefaults: { accentColor: '#0f766e' },
     component: twoColumn({
       rightSections: ['projects', 'technical-skills', 'languages'],
-      headingStyle: 'bar',
+      headingStyle: 'dot-accent',
       headerVariant: 'ruled',
     }),
   },
@@ -410,10 +414,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Banner header and ruled headings. Written for directors who still have to pass an ATS first.',
+      'Dark-full header and underline-accent headings. Written for directors who still have to pass an ATS first.',
     bestFor: ['Directors', 'Heads of function', 'General management'],
     settingsDefaults: { accentColor: '#111827', fontSize: 11 },
-    component: singleColumn({ headingStyle: 'rule', headerVariant: 'banner' }),
+    component: singleColumn({ headingStyle: 'underline-accent', headerVariant: 'dark-full' }),
   },
   {
     id: 'consulting-clean',
@@ -424,9 +428,9 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Centred ruled header and boxed headings. Familiar to consulting and professional-services screens.',
+      'Centred ruled header and inline-rule headings. Familiar to consulting and professional-services screens.',
     bestFor: ['Consulting', 'Strategy', 'Client services'],
-    component: singleColumn({ headingStyle: 'boxed', headerAlign: 'center', headerVariant: 'ruled' }),
+    component: singleColumn({ headingStyle: 'inline-rule', headerAlign: 'center', headerVariant: 'ruled' }),
   },
   {
     id: 'corporate-formal',
@@ -437,9 +441,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Plain headings, left aligned, no decoration. The conservative choice for regulated employers.',
+      'Gradient-bar headings with accent-top header. The refined choice for regulated employers.',
     bestFor: ['Banking', 'Insurance', 'Legal operations'],
-    component: singleColumn({ headingStyle: 'plain' }),
+    settingsDefaults: { accentColor: '#1e3a5f' },
+    component: singleColumn({ headingStyle: 'gradient-bar', headerVariant: 'accent-top' }),
   },
   {
     id: 'finance-conservative',
@@ -450,10 +455,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Ruled header and bar headings in near-black. Built for finance teams that still print packets.',
+      'Ruled header and underline-accent headings in near-black. Built for finance teams that still print packets.',
     bestFor: ['Accounting', 'FP&A', 'Audit'],
     settingsDefaults: { accentColor: '#1f2937' },
-    component: singleColumn({ headingStyle: 'bar', headerVariant: 'ruled' }),
+    component: singleColumn({ headingStyle: 'underline-accent', headerVariant: 'ruled' }),
   },
   {
     id: 'operations-manager',
@@ -464,11 +469,11 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Skills and certifications sit beside operations stories so metrics stay easy to find.',
+      'Skills and certifications sit beside operations stories with dot-accent headings for easy scanning.',
     bestFor: ['Operations', 'Supply chain', 'Programme management'],
     component: twoColumn({
       rightSections: ['technical-skills', 'certifications', 'languages'],
-      headingStyle: 'rule',
+      headingStyle: 'dot-accent',
     }),
   },
   {
@@ -480,15 +485,15 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: true,
     description:
-      'Banner name block and a left skills rail. For leaders applying where a human will also read it.',
+      'Dark-full header and a dark left skills rail. For leaders applying where a human will also read it.',
     bestFor: ['People leadership', 'GM tracks', 'Business operations'],
     settingsDefaults: { accentColor: '#312e81' },
     component: sidebar({
       sidebarSections: ['technical-skills', 'languages', 'certifications'],
       side: 'left',
-      tinted: true,
-      headingStyle: 'plain',
-      headerVariant: 'banner',
+      dark: true,
+      headingStyle: 'underline-accent',
+      headerVariant: 'dark-full',
     }),
   },
   {
@@ -500,10 +505,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: true,
     description:
-      'Centred banner and boxed headings. A quieter executive layout that still parses as one column.',
+      'Centred accent-top header and pill headings. A modern executive layout that still parses as one column.',
     bestFor: ['C-suite briefs', 'Board materials', 'Advisory roles'],
     settingsDefaults: { fontSize: 11, accentColor: '#111827' },
-    component: singleColumn({ headingStyle: 'boxed', headerAlign: 'center', headerVariant: 'banner' }),
+    component: singleColumn({ headingStyle: 'pill', headerAlign: 'center', headerVariant: 'accent-top' }),
   },
   {
     id: 'mba-professional',
@@ -518,7 +523,7 @@ export const TEMPLATES: TemplateDefinition[] = [
     bestFor: ['MBA internships', 'Rotational programmes', 'Strategy internships'],
     component: twoColumn({
       rightSections: ['education', 'technical-skills', 'languages'],
-      headingStyle: 'bar',
+      headingStyle: 'gradient-bar',
       headerAlign: 'center',
     }),
   },
@@ -533,12 +538,13 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Education and coursework live in the sidebar so campus experience is not buried under internships.',
+      'Education and coursework live in a tinted sidebar so campus experience is not buried under internships.',
     bestFor: ['Students', 'Campus recruiting', 'Co-ops'],
     component: sidebar({
       sidebarSections: STUDENT_SIDE,
       side: 'left',
-      headingStyle: 'rule',
+      tinted: true,
+      headingStyle: 'underline-accent',
     }),
   },
   {
@@ -550,10 +556,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Single column with bar headings. The safest student layout for large internship portals.',
+      'Single column with gradient-bar headings and accent-top stripe. Eye-catching for large internship portals.',
     bestFor: ['Internships', 'Summer programmes', 'First applications'],
     settingsDefaults: { accentColor: '#4f46e5' },
-    component: singleColumn({ headingStyle: 'bar' }),
+    component: singleColumn({ headingStyle: 'gradient-bar', headerVariant: 'accent-top' }),
   },
   {
     id: 'education-first',
@@ -564,12 +570,12 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Education stays full-width; projects and skills sit beside internships.',
+      'Education stays full-width; projects and skills sit beside internships with dot-accent headings.',
     bestFor: ['New graduates', 'Research assistants', 'Course-heavy profiles'],
     component: twoColumn({
       fullWidthSections: ['summary', 'education'],
       rightSections: ['projects', 'technical-skills', 'courses'],
-      headingStyle: 'plain',
+      headingStyle: 'dot-accent',
     }),
   },
   {
@@ -581,9 +587,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'Centred header and boxed headings. Designed so projects and coursework can fill a first page honestly.',
+      'Centred header and pill headings. Designed so projects and coursework can fill a first page honestly.',
     bestFor: ['Freshers', 'Entry-level', 'Campus placements'],
-    component: singleColumn({ headingStyle: 'boxed', headerAlign: 'center' }),
+    settingsDefaults: { accentColor: '#6d28d9' },
+    component: singleColumn({ headingStyle: 'pill', headerAlign: 'center' }),
   },
   {
     id: 'academic-simple',
@@ -607,14 +614,14 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Right rail for skills and courses. Main column keeps internships and projects in reading order.',
+      'Dark-tinted right rail for skills and courses. Main column keeps internships and projects in reading order.',
     bestFor: ['New graduates', 'Graduate schemes', 'Junior roles'],
     settingsDefaults: { accentColor: '#4338ca' },
     component: sidebar({
       sidebarSections: ['technical-skills', 'courses', 'languages'],
       side: 'right',
-      tinted: true,
-      headingStyle: 'bar',
+      darkTinted: true,
+      headingStyle: 'underline-accent',
     }),
   },
   {
@@ -626,12 +633,12 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: true,
     description:
-      'Courses and languages sit beside research and awards. A quieter academic two-column.',
+      'Courses and languages sit beside research and awards with inline-rule headings. A refined academic two-column.',
     bestFor: ['Scholarships', 'PhD applications', 'Academic internships'],
     component: twoColumn({
       fullWidthSections: ['summary', 'education'],
       rightSections: ['courses', 'languages', 'certifications'],
-      headingStyle: 'rule',
+      headingStyle: 'inline-rule',
       headerAlign: 'center',
     }),
   },
@@ -646,13 +653,14 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'A tinted left sidebar holds contact details and skills. Distinctive, and still text-only underneath.',
+      'A bold dark left sidebar holds contact details and skills. Distinctive and modern, still text-only underneath.',
     bestFor: ['Product', 'Marketing', 'Smaller employers'],
     settingsDefaults: { accentColor: '#1f2937' },
     component: sidebar({
       sidebarSections: CREATIVE_SIDE,
       side: 'left',
-      tinted: true,
+      dark: true,
+      headingStyle: 'underline-accent',
     }),
   },
   {
@@ -664,10 +672,10 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'excellent',
     isPremium: false,
     description:
-      'A full-width banner name and boxed headings. More presence than Classic ATS without leaving one column.',
+      'A commanding dark-full header and pill headings. More presence than Classic ATS without leaving one column.',
     bestFor: ['Marketing', 'Communications', 'Brand roles'],
     settingsDefaults: { accentColor: '#4f46e5' },
-    component: singleColumn({ headingStyle: 'boxed', headerVariant: 'banner' }),
+    component: singleColumn({ headingStyle: 'pill', headerVariant: 'dark-full' }),
   },
   {
     id: 'modern-split',
@@ -678,13 +686,13 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Centred header, then a skills column beside the story. For teams that will open the PDF, not only parse it.',
+      'Split header with a dark name panel, then a skills column beside the story with gradient-bar headings.',
     bestFor: ['Product marketing', 'Content', 'Community'],
     settingsDefaults: { accentColor: '#4f46e5' },
     component: twoColumn({
       rightSections: ['technical-skills', 'soft-skills', 'languages', 'interests'],
-      headingStyle: 'bar',
-      headerAlign: 'center',
+      headingStyle: 'gradient-bar',
+      headerVariant: 'split',
     }),
   },
   {
@@ -696,15 +704,15 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: true,
     description:
-      'Banner header and a tinted right rail. Distinctive without images, tables or icons in the body.',
+      'Dark-full header and a dark right rail. Distinctive without images, tables or icons in the body.',
     bestFor: ['Design-adjacent roles', 'Studios', 'In-house creative'],
     settingsDefaults: { accentColor: '#6d28d9' },
     component: sidebar({
       sidebarSections: CREATIVE_SIDE,
       side: 'right',
-      tinted: true,
-      headingStyle: 'plain',
-      headerVariant: 'banner',
+      dark: true,
+      headingStyle: 'dot-accent',
+      headerVariant: 'dark-full',
     }),
   },
   {
@@ -716,12 +724,14 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'Projects and skills live in the left rail so a portfolio-minded resume still has a clear main story.',
+      'Projects and skills live in the dark-tinted left rail so a portfolio-minded resume still has a clear main story.',
     bestFor: ['UX-adjacent', 'Product design support', 'Creative operations'],
+    settingsDefaults: { accentColor: '#0f172a' },
     component: sidebar({
       sidebarSections: ['projects', 'technical-skills', 'interests'],
       side: 'left',
-      headingStyle: 'boxed',
+      darkTinted: true,
+      headingStyle: 'underline-accent',
       contactInSidebar: true,
     }),
   },
@@ -734,14 +744,14 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: true,
     description:
-      'Ruled headings and an untinted right sidebar. A quieter creative layout that still labels ATS as Good.',
+      'Inline-rule headings and a tinted right sidebar. A quieter creative layout that still labels ATS as Good.',
     bestFor: ['Visual design support', 'Content design', 'Research ops'],
     settingsDefaults: { accentColor: '#0f172a' },
     component: sidebar({
       sidebarSections: ['technical-skills', 'languages', 'interests'],
       side: 'right',
-      tinted: false,
-      headingStyle: 'rule',
+      tinted: true,
+      headingStyle: 'inline-rule',
       headerAlign: 'center',
     }),
   },
@@ -754,13 +764,83 @@ export const TEMPLATES: TemplateDefinition[] = [
     atsRating: 'good',
     isPremium: false,
     description:
-      'A magazine-like split with a ruled header. Written for editors, writers and communications leads.',
+      'A magazine-like split with underline-accent headings. Written for editors, writers and communications leads.',
     bestFor: ['Editorial', 'Communications', 'Content strategy'],
     component: twoColumn({
       rightSections: ['soft-skills', 'languages', 'interests', 'certifications'],
-      headingStyle: 'rule',
+      headingStyle: 'underline-accent',
       headerVariant: 'ruled',
     }),
+  },
+
+  // --- NEW PREMIUM TEMPLATES (4) -------------------------------------------
+  {
+    id: 'executive-dark',
+    name: 'Executive Dark',
+    slug: 'executive-dark',
+    category: 'business',
+    layout: 'sidebar-left',
+    atsRating: 'good',
+    isPremium: true,
+    description:
+      'A commanding dark sidebar with underline-accent headings and a professional navy palette. Built for senior leaders who want maximum visual impact.',
+    bestFor: ['VP and above', 'Board presentations', 'Senior leadership'],
+    settingsDefaults: { accentColor: '#1e293b', fontSize: 11 },
+    component: sidebar({
+      sidebarSections: ['technical-skills', 'certifications', 'languages', 'interests'],
+      side: 'left',
+      dark: true,
+      headingStyle: 'underline-accent',
+      sidebarWidth: '34%',
+    }),
+  },
+  {
+    id: 'modern-split-header',
+    name: 'Modern Split Header',
+    slug: 'modern-split-header',
+    category: 'creative',
+    layout: 'split-header',
+    atsRating: 'good',
+    isPremium: true,
+    description:
+      'Two-tone split header — dark left with your name, light right with contact details — and pill headings below. The showstopper template.',
+    bestFor: ['Startups', 'Creative agencies', 'Product roles'],
+    settingsDefaults: { accentColor: '#1e3a5f' },
+    component: singleColumn({ headingStyle: 'pill', headerVariant: 'split' }),
+  },
+  {
+    id: 'two-tone-professional',
+    name: 'Two-Tone Professional',
+    slug: 'two-tone-professional',
+    category: 'tech',
+    layout: 'sidebar-right',
+    atsRating: 'good',
+    isPremium: true,
+    description:
+      'Dark right sidebar for skills and certifications with dot-accent headings. Split header gives a premium two-tone look.',
+    bestFor: ['Tech leads', 'Staff engineers', 'Senior developers'],
+    settingsDefaults: { accentColor: '#0f172a' },
+    component: sidebar({
+      sidebarSections: ['technical-skills', 'certifications', 'languages', 'courses'],
+      side: 'right',
+      dark: true,
+      headingStyle: 'dot-accent',
+      headerVariant: 'split',
+    }),
+  },
+  {
+    id: 'minimal-elegant',
+    name: 'Minimal Elegant',
+    slug: 'minimal-elegant',
+    category: 'creative',
+    layout: 'single-column',
+    atsRating: 'excellent',
+    isPremium: true,
+    description:
+      'Dark-full header, inline-rule headings, elegant typography. A serif-inspired single column that makes a quiet statement.',
+    bestFor: ['Editorial', 'Luxury brands', 'Publishing', 'PR'],
+    settingsDefaults: { accentColor: '#1a1a2e', fontSize: 11 },
+    component: singleColumn({ headingStyle: 'inline-rule', headerVariant: 'dark-full' }),
   },
 ];
 

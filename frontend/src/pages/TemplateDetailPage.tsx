@@ -1,11 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { queryKeys } from '@/app/queryClient';
+import { queryClient, queryKeys } from '@/app/queryClient';
 import { AdSlot } from '@/components/ads/AdSlot';
 import { breadcrumbJsonLd, faqJsonLd, Seo, webPageJsonLd } from '@/components/seo/Seo';
-import { Badge, ButtonLink, Card } from '@/components/ui';
+import { Badge, Button, ButtonLink, Card } from '@/components/ui';
+import { defaultSettings } from '@/features/resume/defaults';
 import { ResumeDocument } from '@/features/resume/render/ResumeDocument';
 import { sampleResumeData, sampleSettings } from '@/features/resume/sampleData';
 import { TEMPLATES, templateBySlug } from '@/features/resume/templates/registry';
@@ -14,8 +16,11 @@ import {
   CATEGORY_LABELS,
   LAYOUT_LABELS,
 } from '@/features/resume/templates/types';
+import { errorMessage } from '@/lib/api-client';
+import { resumeService } from '@/services/resume.service';
 import { templatesService } from '@/services/templates.service';
 import { useIsAuthenticated } from '@/store/auth';
+import { toast } from '@/store/toast';
 
 const faqs = (name: string) => [
   {
@@ -31,8 +36,10 @@ const faqs = (name: string) => [
 
 export default function TemplateDetailPage() {
   const { slug = '' } = useParams();
+  const navigate = useNavigate();
   const local = templateBySlug(slug);
   const signedIn = useIsAuthenticated();
+  const [starting, setStarting] = useState(false);
 
   const remote = useQuery({
     queryKey: queryKeys.template(slug),
@@ -56,7 +63,24 @@ export default function TemplateDetailPage() {
   const related = TEMPLATES.filter(
     (template) => template.category === local.category && template.id !== local.id,
   ).slice(0, 3);
-  const startTo = signedIn ? `/onboarding?template=${local.id}` : `/register?template=${local.id}`;
+  const startTo = `/register?template=${local.id}`;
+
+  const startWithTemplate = async () => {
+    setStarting(true);
+    try {
+      const resume = await resumeService.create({
+        title: `${local.name} resume`,
+        templateId: local.id,
+        settings: { ...defaultSettings(), ...local.settingsDefaults },
+      });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      void queryClient.invalidateQueries({ queryKey: ['resumes'] });
+      navigate(`/resume/${resume.id}/edit`);
+    } catch (error) {
+      toast.error('Could not start this template', errorMessage(error));
+      setStarting(false);
+    }
+  };
 
   return (
     <>
@@ -111,9 +135,15 @@ export default function TemplateDetailPage() {
           </ul>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink to={startTo} trailingIcon={<ArrowRight />}>
-              Use this template
-            </ButtonLink>
+            {signedIn ? (
+              <Button trailingIcon={<ArrowRight />} loading={starting} onClick={() => void startWithTemplate()}>
+                Use this template
+              </Button>
+            ) : (
+              <ButtonLink to={startTo} trailingIcon={<ArrowRight />}>
+                Use this template
+              </ButtonLink>
+            )}
             <ButtonLink to="/ats-resume-checker" variant="secondary">
               Check a resume first
             </ButtonLink>

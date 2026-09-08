@@ -2,19 +2,27 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
+import { queryClient, queryKeys } from '@/app/queryClient';
 import { Seo } from '@/components/seo/Seo';
 import { Alert, Button, Field, Input } from '@/components/ui';
 import { IconButton } from '@/components/ui/IconButton';
 import { loginSchema, type LoginValues } from '@/features/auth/schemas';
 import { useApiFormError } from '@/features/auth/useFormErrors';
+import { defaultSettings } from '@/features/resume/defaults';
+import { templateById } from '@/features/resume/templates/registry';
+import { errorMessage } from '@/lib/api-client';
+import { resumeService } from '@/services/resume.service';
 import { useAuthStore } from '@/store/auth';
+import { toast } from '@/store/toast';
 
 export default function LoginPage() {
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
   const location = useLocation();
+  const [params] = useSearchParams();
+  const template = params.get('template');
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -31,11 +39,36 @@ export default function LoginPage() {
   const redirectTo = (location.state as { from?: string } | null)?.from ?? '/dashboard';
 
   const onSubmit = async (values: LoginValues) => {
+    let user;
     try {
-      await login(values);
-      navigate(redirectTo, { replace: true });
+      user = await login(values);
     } catch (error) {
       handle(error);
+      return;
+    }
+
+    if (!template) {
+      navigate(redirectTo, { replace: true });
+      return;
+    }
+
+    if (!user.onboarding?.completed) {
+      navigate(`/onboarding?template=${encodeURIComponent(template)}`, { replace: true });
+      return;
+    }
+
+    try {
+      const chosen = templateById(template);
+      const resume = await resumeService.create({
+        title: `${chosen.name} resume`,
+        templateId: chosen.id,
+        settings: { ...defaultSettings(), ...chosen.settingsDefaults },
+      });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      void queryClient.invalidateQueries({ queryKey: ['resumes'] });
+      navigate(`/resume/${resume.id}/edit`, { replace: true });
+    } catch (error) {
+      toast.error('Could not start this template', errorMessage(error));
     }
   };
 
@@ -102,7 +135,10 @@ export default function LoginPage() {
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         New to ResumeForge?{' '}
-        <Link to="/register" className="font-medium text-foreground link-underline">
+        <Link
+          to={template ? `/register?template=${encodeURIComponent(template)}` : '/register'}
+          className="font-medium text-foreground link-underline"
+        >
           Create an account
         </Link>
       </p>

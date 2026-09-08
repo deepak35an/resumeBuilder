@@ -4,8 +4,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AppPage } from '@/components/layout/AppLayout';
 import { Seo } from '@/components/seo/Seo';
 import { Badge, Button, Field, Input, Select } from '@/components/ui';
+import { defaultSettings } from '@/features/resume/defaults';
 import { TemplateCard } from '@/features/resume/templates/TemplateCard';
-import { TEMPLATES } from '@/features/resume/templates/registry';
+import { TEMPLATES, templateById } from '@/features/resume/templates/registry';
 import { errorMessage } from '@/lib/api-client';
 import { resumeService } from '@/services/resume.service';
 import { usersService } from '@/services/users.service';
@@ -32,17 +33,18 @@ export default function OnboardingPage() {
   const [busy, setBusy] = useState(false);
 
   const recommended = useMemo(() => {
-    if (level === 'student' || level === 'fresher') {
-      return TEMPLATES.filter((t) => t.category === 'student' || t.id === 'classic-ats').slice(0, 4);
-    }
-    if (/engineer|developer|data|devops|cloud|security/i.test(role)) {
-      return TEMPLATES.filter((t) => t.category === 'tech' || t.id === 'classic-ats').slice(0, 4);
-    }
-    if (/manager|director|consult|financ|account/i.test(role)) {
-      return TEMPLATES.filter((t) => t.category === 'business' || t.id === 'classic-ats').slice(0, 4);
-    }
-    return TEMPLATES.filter((t) => t.category === 'ats').slice(0, 4);
-  }, [level, role]);
+    const picked = templateById(templateId);
+    const pool =
+      level === 'student' || level === 'fresher'
+        ? TEMPLATES.filter((t) => t.category === 'student' || t.id === 'classic-ats')
+        : /engineer|developer|data|devops|cloud|security/i.test(role)
+          ? TEMPLATES.filter((t) => t.category === 'tech' || t.id === 'classic-ats')
+          : /manager|director|consult|financ|account/i.test(role)
+            ? TEMPLATES.filter((t) => t.category === 'business' || t.id === 'classic-ats')
+            : TEMPLATES.filter((t) => t.category === 'ats');
+    const rest = pool.filter((template) => template.id !== templateId).slice(0, picked ? 3 : 4);
+    return picked ? [picked, ...rest] : rest;
+  }, [level, role, templateId]);
 
   const finish = async () => {
     setBusy(true);
@@ -53,9 +55,11 @@ export default function OnboardingPage() {
         goal: 'job-search',
       });
       setUser(user);
+      const chosen = templateById(templateId);
       const resume = await resumeService.create({
         title: role ? `${role} resume` : 'Untitled resume',
         templateId,
+        settings: { ...defaultSettings(), ...chosen?.settingsDefaults },
       });
       toast.success('Workspace ready');
       navigate(`/resume/${resume.id}/edit`);

@@ -26,6 +26,7 @@
   --resume-line-height: 1.4;
   --resume-heading-scale: 1;
   --resume-accent: #111827;
+  --resume-accent-light: color-mix(in srgb, var(--resume-accent) 12%, transparent);
   --resume-ink: #111111;
   --resume-muted: #4b5563;
   --resume-rule: #d1d5db;
@@ -90,6 +91,7 @@
   font-size: calc(var(--resume-font-size) * 1.15);
   font-weight: 500;
   color: var(--resume-muted);
+  margin-top: 2pt;
 }
 
 .resume-contact {
@@ -138,6 +140,84 @@
   border: 0;
   border-top: 0.75pt solid var(--resume-rule);
   margin: 3pt 0 6pt;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NEW HEADING STYLE: underline-accent                                        */
+/* A thick coloured underline beneath section titles, inspired by modern       */
+/* resume designs with gold/coloured accent stripes.                          */
+/* -------------------------------------------------------------------------- */
+.resume-section__title--underline-accent {
+  display: inline-block;
+  padding-bottom: 3pt;
+  border-bottom: 2.5pt solid var(--resume-accent);
+  margin-bottom: 6pt;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NEW HEADING STYLE: dot-accent                                              */
+/* A small accent-coloured dot before the section title for subtle visual     */
+/* hierarchy without heavy bars or boxes.                                     */
+/* -------------------------------------------------------------------------- */
+.resume-section__title--dot-accent {
+  display: flex;
+  align-items: center;
+  gap: 5pt;
+}
+
+.resume-section__title--dot-accent::before {
+  content: '';
+  display: inline-block;
+  width: 6pt;
+  height: 6pt;
+  border-radius: 50%;
+  background: var(--resume-accent);
+  flex-shrink: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NEW HEADING STYLE: pill                                                    */
+/* Rounded pill-shaped section headers with accent background.               */
+/* More modern and softer than the angular 'boxed' style.                    */
+/* -------------------------------------------------------------------------- */
+.resume-section__title--pill {
+  display: inline-block;
+  background: var(--resume-accent);
+  color: #ffffff;
+  padding: 2pt 10pt;
+  border-radius: 10pt;
+  margin-bottom: 4pt;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NEW HEADING STYLE: gradient-bar                                            */
+/* Left accent bar with gradient fade, more refined than solid bar.          */
+/* -------------------------------------------------------------------------- */
+.resume-section__title--gradient-bar {
+  border-left: 3.5pt solid var(--resume-accent);
+  padding-left: 6pt;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--resume-accent) 8%, transparent) 0%, transparent 100%);
+  padding-top: 2pt;
+  padding-bottom: 2pt;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NEW HEADING STYLE: inline-rule                                             */
+/* Section title with a horizontal rule extending to the right, like         */
+/* "EXPERIENCE ————————————————"                                             */
+/* -------------------------------------------------------------------------- */
+.resume-section__title--inline-rule {
+  display: flex;
+  align-items: center;
+  gap: 8pt;
+}
+
+.resume-section__title--inline-rule::after {
+  content: '';
+  flex: 1;
+  height: 1pt;
+  background: var(--resume-accent);
+  opacity: 0.35;
 }
 
 .resume-entry {
@@ -246,6 +326,102 @@
   padding: var(--resume-page-padding) 10pt var(--resume-page-padding) var(--resume-page-padding);
 }
 
+/* -------------------------------------------------------------------------- */
+/* NEW SIDEBAR VARIANT: dark                                                  */
+/* Deep dark background with light text — the bold, modern look from the     */
+/* reference images with charcoal/navy sidebars.                             */
+/* -------------------------------------------------------------------------- */
+.resume-sidebar--dark {
+  background: var(--resume-accent);
+  color: #ffffff;
+  margin: calc(-1 * var(--resume-page-padding)) 0 calc(-1 * var(--resume-page-padding))
+    calc(-1 * var(--resume-page-padding));
+  padding: var(--resume-page-padding) 10pt var(--resume-page-padding) var(--resume-page-padding);
+}
+
+/* Override all text colours inside a dark sidebar to white/light tones */
+.resume-sidebar--dark .resume-section__title {
+  color: #ffffff;
+}
+
+.resume-sidebar--dark .resume-section__rule {
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+.resume-sidebar--dark .resume-section__title--underline-accent {
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+
+.resume-sidebar--dark .resume-section__title--dot-accent::before {
+  background: #ffffff;
+}
+
+.resume-sidebar--dark .resume-section__title--pill {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.resume-sidebar--dark .resume-section__title--gradient-bar {
+  border-left-color: rgba(255, 255, 255, 0.5);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
+}
+
+.resume-sidebar--dark .resume-section__title--inline-rule::after {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.resume-sidebar--dark .resume-entry__subtitle,
+.resume-sidebar--dark .resume-entry__meta,
+.resume-sidebar--dark .resume-skills__label,
+.resume-sidebar--dark .resume-inline-list,
+.resume-sidebar--dark .resume-contact,
+.resume-sidebar--dark .resume-contact__sep {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.resume-sidebar--dark .resume-entry__title {
+  color: #ffffff;
+}
+
+.resume-sidebar--dark .resume-bullets > li {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.resume-sidebar--dark .resume-bullets > li::before {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.resume-sidebar--dark .resume-skills__row {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* -------------------------------------------------------------------------- */
+/* NEW SIDEBAR VARIANT: dark-tinted                                           */
+/* Slightly lighter than pure dark — for a sophisticated charcoal tone.      */
+/* -------------------------------------------------------------------------- */
+.resume-sidebar--dark-tinted {
+  background: color-mix(in srgb, var(--resume-accent) 90%, #ffffff);
+  color: #ffffff;
+  margin: calc(-1 * var(--resume-page-padding)) 0 calc(-1 * var(--resume-page-padding))
+    calc(-1 * var(--resume-page-padding));
+  padding: var(--resume-page-padding) 10pt var(--resume-page-padding) var(--resume-page-padding);
+}
+
+/* Inherit all the dark sidebar text overrides */
+.resume-sidebar--dark-tinted .resume-section__title { color: #ffffff; }
+.resume-sidebar--dark-tinted .resume-section__rule { border-top-color: rgba(255, 255, 255, 0.2); }
+.resume-sidebar--dark-tinted .resume-entry__subtitle,
+.resume-sidebar--dark-tinted .resume-entry__meta,
+.resume-sidebar--dark-tinted .resume-skills__label,
+.resume-sidebar--dark-tinted .resume-inline-list,
+.resume-sidebar--dark-tinted .resume-contact,
+.resume-sidebar--dark-tinted .resume-contact__sep { color: rgba(255, 255, 255, 0.75); }
+.resume-sidebar--dark-tinted .resume-entry__title { color: #ffffff; }
+.resume-sidebar--dark-tinted .resume-bullets > li { color: rgba(255, 255, 255, 0.9); }
+.resume-sidebar--dark-tinted .resume-bullets > li::before { color: rgba(255, 255, 255, 0.5); }
+.resume-sidebar--dark-tinted .resume-skills__row { color: rgba(255, 255, 255, 0.9); }
+
+/* Original banner header */
 .resume-header--banner {
   background: var(--resume-accent);
   color: #ffffff;
@@ -258,6 +434,190 @@
 .resume-header--banner .resume-contact,
 .resume-header--banner .resume-contact__sep {
   color: #ffffff;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NEW HEADER VARIANT: dark-full                                              */
+/* Full-width dark header with enhanced typography — bigger name, subtle      */
+/* letter-spacing, and a bottom border accent line.                          */
+/* -------------------------------------------------------------------------- */
+.resume-header--dark-full {
+  background: var(--resume-accent);
+  color: #ffffff;
+  margin: calc(-1 * var(--resume-page-padding)) calc(-1 * var(--resume-page-padding)) 0;
+  padding: calc(var(--resume-page-padding) * 0.85) var(--resume-page-padding);
+  border-bottom: 3pt solid color-mix(in srgb, var(--resume-accent) 60%, #ffffff);
+}
+
+.resume-header--dark-full .resume-name {
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  font-size: calc(var(--resume-font-size) * 2.4 * var(--resume-heading-scale));
+}
+
+.resume-header--dark-full .resume-role {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.resume-header--dark-full .resume-contact,
+.resume-header--dark-full .resume-contact__sep {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* -------------------------------------------------------------------------- */
+/* NEW HEADER VARIANT: split                                                  */
+/* Two-tone header: dark left panel with name/role, lighter right with       */
+/* contact info. Inspired by the bold two-panel reference images.            */
+/* -------------------------------------------------------------------------- */
+.resume-header--split {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  margin: calc(-1 * var(--resume-page-padding)) calc(-1 * var(--resume-page-padding)) 0;
+}
+
+.resume-header--split .resume-header__left {
+  background: var(--resume-accent);
+  color: #ffffff;
+  padding: calc(var(--resume-page-padding) * 0.85) var(--resume-page-padding);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.resume-header--split .resume-header__left .resume-name {
+  color: #ffffff;
+  font-size: calc(var(--resume-font-size) * 2.2 * var(--resume-heading-scale));
+  letter-spacing: 0.02em;
+}
+
+.resume-header--split .resume-header__left .resume-role {
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 400;
+}
+
+.resume-header--split .resume-header__right {
+  background: color-mix(in srgb, var(--resume-accent) 8%, #ffffff);
+  padding: calc(var(--resume-page-padding) * 0.85) var(--resume-page-padding);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3pt;
+}
+
+.resume-header--split .resume-header__right .resume-contact {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3pt;
+  color: var(--resume-ink);
+  font-size: calc(var(--resume-font-size) * 0.88);
+}
+
+.resume-header--split .resume-header__right .resume-contact__sep {
+  display: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NEW HEADER VARIANT: accent-top                                             */
+/* Thin accent colour bar at the very top of the page, name/contact below.  */
+/* Subtle and modern — adds colour without overwhelming.                    */
+/* -------------------------------------------------------------------------- */
+.resume-header--accent-top {
+  margin: calc(-1 * var(--resume-page-padding)) calc(-1 * var(--resume-page-padding)) 0;
+  padding: 0 var(--resume-page-padding) 0;
+}
+
+.resume-header--accent-top::before {
+  content: '';
+  display: block;
+  height: 4pt;
+  background: var(--resume-accent);
+  margin: 0 calc(-1 * var(--resume-page-padding));
+}
+
+.resume-header--accent-top .resume-name {
+  margin-top: 10pt;
+}
+
+/* -------------------------------------------------------------------------- */
+/* ENTRY VARIANT: bordered                                                    */
+/* Left accent border on entries for visual grouping — inspired by modern    */
+/* resume designs that use colour accents to break up dense content.         */
+/* -------------------------------------------------------------------------- */
+.resume-entry--bordered {
+  border-left: 2pt solid var(--resume-accent);
+  padding-left: 8pt;
+}
+
+/* -------------------------------------------------------------------------- */
+/* SKILL PILLS                                                                */
+/* Rounded inline tags for skills/languages — more visual and modern than    */
+/* plain comma-separated text. Used optionally by new templates.             */
+/* -------------------------------------------------------------------------- */
+.resume-skill-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3pt;
+  margin-top: 3pt;
+}
+
+.resume-skill-pill {
+  display: inline-block;
+  padding: 1.5pt 6pt;
+  font-size: calc(var(--resume-font-size) * 0.85);
+  border-radius: 8pt;
+  background: color-mix(in srgb, var(--resume-accent) 10%, #ffffff);
+  color: var(--resume-accent);
+  border: 0.5pt solid color-mix(in srgb, var(--resume-accent) 20%, transparent);
+}
+
+/* Dark sidebar pill variant */
+.resume-sidebar--dark .resume-skill-pill {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.resume-sidebar--dark-tinted .resume-skill-pill {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* -------------------------------------------------------------------------- */
+/* ACCENT RULE: coloured section divider                                      */
+/* A coloured rule instead of grey — bolder section separation.              */
+/* -------------------------------------------------------------------------- */
+.resume-section__rule--accent {
+  border: 0;
+  border-top: 1.5pt solid var(--resume-accent);
+  margin: 4pt 0 6pt;
+  opacity: 0.4;
+}
+
+/* -------------------------------------------------------------------------- */
+/* COMPACT CONTACT GRID                                                       */
+/* Stacked contact items with small icon-like markers, for sidebar layouts.  */
+/* -------------------------------------------------------------------------- */
+.resume-contact-grid {
+  display: grid;
+  gap: 3pt;
+}
+
+.resume-contact-grid__item {
+  font-size: calc(var(--resume-font-size) * 0.88);
+  color: var(--resume-muted);
+  word-break: break-word;
+  line-height: 1.35;
+}
+
+.resume-sidebar--dark .resume-contact-grid__item {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.resume-sidebar--dark-tinted .resume-contact-grid__item {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 /* Mini previews used on the templates gallery and landing page. Scaled with a

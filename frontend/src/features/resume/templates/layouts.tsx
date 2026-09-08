@@ -3,7 +3,7 @@
  *
  * A template is a thin configuration of one of these shells: which sections go
  * in the sidebar, how headings are drawn, whether the header is a banner. That
- * keeps 44 templates genuinely different in layout without 44 copies of the
+ * keeps 44+ templates genuinely different in layout without copies of the
  * section-rendering logic.
  */
 
@@ -18,12 +18,12 @@ import {
 import type { ResumeSection, SectionType } from '@/types/resume';
 import type { TemplateComponentProps } from './types';
 
-export type HeadingStyle = 'plain' | 'rule' | 'bar' | 'boxed';
+export type HeadingStyle = 'plain' | 'rule' | 'bar' | 'boxed' | 'underline-accent' | 'dot-accent' | 'pill' | 'gradient-bar' | 'inline-rule';
 
 export interface SingleColumnOptions {
   headingStyle?: HeadingStyle;
   headerAlign?: 'left' | 'center';
-  headerVariant?: 'plain' | 'banner' | 'ruled';
+  headerVariant?: 'plain' | 'banner' | 'ruled' | 'split' | 'dark-full' | 'accent-top';
 }
 
 function visibleSections(sections: ResumeSection[]): ResumeSection[] {
@@ -64,6 +64,10 @@ export interface SidebarOptions extends SingleColumnOptions {
   sidebarSections: SectionType[];
   side?: 'left' | 'right';
   tinted?: boolean;
+  /** Dark sidebar: accent-coloured background with white text. */
+  dark?: boolean;
+  /** Slightly lighter dark variant for a softer look. */
+  darkTinted?: boolean;
   sidebarWidth?: string;
   /** Contact details in the sidebar rather than under the name. */
   contactInSidebar?: boolean;
@@ -75,6 +79,8 @@ export function SidebarLayout({
   sidebarSections,
   side = 'left',
   tinted = false,
+  dark = false,
+  darkTinted = false,
   sidebarWidth = '32%',
   headingStyle = 'rule',
   headerAlign = 'left',
@@ -88,11 +94,17 @@ export function SidebarLayout({
   const sidebarIds = new Set(inSidebar.map((section) => section.id));
   const inMain = sections.filter((section) => !sidebarIds.has(section.id));
 
+  // Determine sidebar CSS class
+  const sidebarClassName = dark
+    ? 'resume-sidebar resume-sidebar--dark'
+    : darkTinted
+      ? 'resume-sidebar resume-sidebar--dark-tinted'
+      : tinted
+        ? 'resume-sidebar resume-sidebar--tinted'
+        : 'resume-sidebar';
+
   const sidebar = (
-    <aside
-      className={tinted ? 'resume-sidebar resume-sidebar--tinted' : 'resume-sidebar'}
-      key="sidebar"
-    >
+    <aside className={sidebarClassName} key="sidebar">
       {contactInSidebar && (
         <ResumeSectionShell title="Contact" settings={settings} headingStyle={headingStyle}>
           <ResumeContactStack personal={data.personal} />
