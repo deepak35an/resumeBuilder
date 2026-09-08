@@ -9,7 +9,7 @@ import { useOnClickOutside } from '@/hooks/useUiPrimitives';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth';
 
-import { headerNav, type NavLinkDef } from './navigation';
+import { headerNav, productLinks, workspaceNav, type NavLinkDef } from './navigation';
 import { ThemeToggle } from './ThemeToggle';
 
 function DesktopMenu({ label, items }: { label: string; items: NavLinkDef[] }) {
@@ -94,23 +94,44 @@ export function PublicHeader() {
         <Logo />
 
         <nav aria-label="Main" className="ml-4 hidden items-center gap-0.5 lg:flex">
-          {headerNav.map((entry) =>
-            'items' in entry ? (
-              <DesktopMenu key={entry.label} label={entry.label} items={entry.items} />
-            ) : (
-              <NavLink
-                key={entry.to}
-                to={entry.to}
-                className={({ isActive }) =>
-                  cn(
-                    'rounded-md px-2.5 py-1.5 text-sm transition-colors',
-                    isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-                  )
-                }
-              >
-                {entry.label}
-              </NavLink>
-            ),
+          {isAuthenticated ? (
+            <>
+              {workspaceNav.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === '/dashboard'}
+                  className={({ isActive }) =>
+                    cn(
+                      'rounded-md px-2.5 py-1.5 text-sm transition-colors',
+                      isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+                    )
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+              <DesktopMenu label="Site" items={[{ label: 'Home', to: '/' }, ...productLinks]} />
+            </>
+          ) : (
+            headerNav.map((entry) =>
+              'items' in entry ? (
+                <DesktopMenu key={entry.label} label={entry.label} items={entry.items} />
+              ) : (
+                <NavLink
+                  key={entry.to}
+                  to={entry.to}
+                  className={({ isActive }) =>
+                    cn(
+                      'rounded-md px-2.5 py-1.5 text-sm transition-colors',
+                      isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+                    )
+                  }
+                >
+                  {entry.label}
+                </NavLink>
+              ),
+            )
           )}
         </nav>
 
@@ -144,30 +165,51 @@ export function PublicHeader() {
           aria-label="Mobile"
           className="animate-fade-in border-t border-border bg-surface px-4 pb-5 pt-3 lg:hidden"
         >
-          {headerNav.map((entry) => (
-            <div key={'items' in entry ? entry.label : entry.to} className="py-1">
-              {'items' in entry ? (
-                <>
-                  <p className="px-1 pb-1 pt-2 text-2xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    {entry.label}
-                  </p>
-                  {entry.items.map((item) => (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      className="block rounded-lg px-1 py-2 text-sm text-foreground"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </>
-              ) : (
-                <Link to={entry.to} className="block rounded-lg px-1 py-2 text-sm text-foreground">
-                  {entry.label}
+          {isAuthenticated ? (
+            <>
+              {workspaceNav.map((item) => (
+                <Link key={item.to} to={item.to} className="block rounded-lg px-1 py-2 text-sm text-foreground">
+                  {item.label}
                 </Link>
-              )}
-            </div>
-          ))}
+              ))}
+              <p className="px-1 pb-1 pt-2 text-2xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Site
+              </p>
+              <Link to="/" className="block rounded-lg px-1 py-2 text-sm text-foreground">
+                Home
+              </Link>
+              {productLinks.map((item) => (
+                <Link key={item.to} to={item.to} className="block rounded-lg px-1 py-2 text-sm text-foreground">
+                  {item.label}
+                </Link>
+              ))}
+            </>
+          ) : (
+            headerNav.map((entry) => (
+              <div key={'items' in entry ? entry.label : entry.to} className="py-1">
+                {'items' in entry ? (
+                  <>
+                    <p className="px-1 pb-1 pt-2 text-2xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {entry.label}
+                    </p>
+                    {entry.items.map((item) => (
+                      <Link
+                        key={item.to}
+                        to={item.to}
+                        className="block rounded-lg px-1 py-2 text-sm text-foreground"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </>
+                ) : (
+                  <Link to={entry.to} className="block rounded-lg px-1 py-2 text-sm text-foreground">
+                    {entry.label}
+                  </Link>
+                )}
+              </div>
+            ))
+          )}
           {!isAuthenticated && (
             <Link to="/login" className="mt-2 block sm:hidden">
               <Button variant="secondary" fullWidth>

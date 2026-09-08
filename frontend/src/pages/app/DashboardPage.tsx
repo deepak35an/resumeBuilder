@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, FilePlus2, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { queryKeys } from '@/app/queryClient';
@@ -16,6 +17,9 @@ import {
   SectionHeading,
   Skeleton,
 } from '@/components/ui';
+import { defaultSettings } from '@/features/resume/defaults';
+import { TemplatePickerModal } from '@/features/resume/templates/TemplatePickerModal';
+import type { TemplateDefinition } from '@/features/resume/templates/types';
 import { formatRelativeTime } from '@/lib/utils';
 import { dashboardService } from '@/services/dashboard.service';
 import { resumeService } from '@/services/resume.service';
@@ -26,18 +30,27 @@ import { errorMessage } from '@/lib/api-client';
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
   const overview = useQuery({
     queryKey: queryKeys.dashboard,
     queryFn: dashboardService.get,
   });
 
-  const createResume = async () => {
+  const createResume = async (template: TemplateDefinition) => {
+    setCreating(true);
     try {
-      const resume = await resumeService.create({ title: 'Untitled resume' });
+      const resume = await resumeService.create({
+        title: `${template.name} resume`,
+        templateId: template.id,
+        settings: { ...defaultSettings(), ...template.settingsDefaults },
+      });
       toast.success('Resume created');
+      setPickerOpen(false);
       navigate(`/resume/${resume.id}/edit`);
     } catch (error) {
       toast.error('Could not create a resume', errorMessage(error));
+      setCreating(false);
     }
   };
 
@@ -65,7 +78,7 @@ export default function DashboardPage() {
           title="Welcome to your Career OS"
           description="Create a resume to start the loop: build, check, match, tailor, export, apply."
           action={
-            <Button onClick={() => void createResume()} leadingIcon={<FilePlus2 />}>
+            <Button onClick={() => setPickerOpen(true)} leadingIcon={<FilePlus2 />}>
               Create resume
             </Button>
           }
@@ -187,6 +200,13 @@ export default function DashboardPage() {
           </section>
         </div>
       )}
+
+      <TemplatePickerModal
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        busy={creating}
+        onConfirm={(template) => void createResume(template)}
+      />
     </AppPage>
   );
 }

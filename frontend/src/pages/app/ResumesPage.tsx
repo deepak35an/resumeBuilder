@@ -18,6 +18,10 @@ import {
   Modal,
   Skeleton,
 } from '@/components/ui';
+import { defaultSettings } from '@/features/resume/defaults';
+import { TemplatePickerModal } from '@/features/resume/templates/TemplatePickerModal';
+import { templateById } from '@/features/resume/templates/registry';
+import type { TemplateDefinition } from '@/features/resume/templates/types';
 import { downloadBlob, formatRelativeTime } from '@/lib/utils';
 import { errorMessage } from '@/lib/api-client';
 import { exportService } from '@/services/export.service';
@@ -32,6 +36,8 @@ export default function ResumesPage() {
   const [rename, setRename] = useState<ResumeSummary | null>(null);
   const [title, setTitle] = useState('');
   const [remove, setRemove] = useState<ResumeSummary | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [changing, setChanging] = useState<ResumeSummary | null>(null);
 
   const list = useQuery({
     queryKey: queryKeys.resumes({ search }),
@@ -41,12 +47,29 @@ export default function ResumesPage() {
   const invalidate = () => queryClient.invalidateQueries({ queryKey: queryKeys.resumes() });
 
   const create = useMutation({
-    mutationFn: () => resumeService.create({ title: 'Untitled resume' }),
+    mutationFn: (template: TemplateDefinition) =>
+      resumeService.create({
+        title: `${template.name} resume`,
+        templateId: template.id,
+        settings: { ...defaultSettings(), ...template.settingsDefaults },
+      }),
     onSuccess: (resume) => {
       toast.success('Resume created');
+      setPickerOpen(false);
       navigate(`/resume/${resume.id}/edit`);
     },
     onError: (error) => toast.error('Could not create a resume', errorMessage(error)),
+  });
+
+  const applyTemplate = useMutation({
+    mutationFn: ({ resume, template }: { resume: ResumeSummary; template: TemplateDefinition }) =>
+      resumeService.update(resume.id, { templateId: template.id }),
+    onSuccess: () => {
+      toast.success('Template updated');
+      setChanging(null);
+      void invalidate();
+    },
+    onError: (error) => toast.error('Could not change template', errorMessage(error)),
   });
 
   const duplicate = useMutation({
@@ -67,7 +90,7 @@ export default function ResumesPage() {
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">Resumes</h1>
           <p className="mt-1 text-sm text-muted-foreground">Edit, duplicate, export or run an ATS check.</p>
         </div>
-        <Button leadingIcon={<FilePlus2 />} loading={create.isPending} onClick={() => create.mutate()}>
+        <Button leadingIcon={<FilePlus2 />} onClick={() => setPickerOpen(true)}>
           Create resume
         </Button>
       </div>
@@ -99,7 +122,7 @@ export default function ResumesPage() {
           title="No resumes yet"
           description="Create your first resume optimised for the role you want."
           action={
-            <Button onClick={() => create.mutate()} leadingIcon={<FilePlus2 />}>
+            <Button onClick={() => setPickerOpen(true)} leadingIcon={<FilePlus2 />}>
               Create resume
             </Button>
           }
@@ -120,6 +143,8 @@ export default function ResumesPage() {
                     {resume.title}
                   </button>
                   <p className="mt-1 text-xs text-muted-foreground">
+                    {templateById(resume.templateId).name}
+                    {' · '}
                     Updated {formatRelativeTime(resume.updatedAt)}
                     {resume.tailoredFor ? ` · ${resume.tailoredFor}` : ''}
                   </p>
@@ -144,6 +169,11 @@ export default function ResumesPage() {
                       label: 'Edit',
                       icon: <Pencil />,
                       onSelect: () => navigate(`/resume/${resume.id}/edit`),
+                    },
+                    {
+                      id: 'template',
+                      label: 'Change template',
+                      onSelect: () => setChanging(resume),
                     },
                     {
                       id: 'duplicate',
@@ -233,6 +263,25 @@ export default function ResumesPage() {
       >
         <Input value={title} onChange={(event) => setTitle(event.target.value)} aria-label="Resume title" />
       </Modal>
+
+      <TemplatePickerModal
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        busy={create.isPending}
+        onConfirm={(template) => create.mutate(template)}
+      />
+      <TemplatePickerModal
+        open={Boolean(changing)}
+        onClose={() => setChanging(null)}
+        title="Change template"
+        confirmLabel="Apply template"
+        initialTemplateId={changing?.templateId}
+        busy={applyTemplate.isPending}
+        onConfirm={(template) => {
+          if (!changing) return;
+          applyTemplate.mutate({ resume: changing, template });
+        }}
+      />
 
       <ConfirmDialog
         open={Boolean(remove)}

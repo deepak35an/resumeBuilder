@@ -42,6 +42,15 @@ export const resourceLinks: NavLinkDef[] = [
   { label: 'Contact', to: '/contact' },
 ];
 
+/** Same destinations on the public site and the workspace, so signed-in users are not stuck in one bar. */
+export const workspaceNav: NavLinkDef[] = [
+  { label: 'Dashboard', to: '/dashboard' },
+  { label: 'Resumes', to: '/resumes' },
+  { label: 'Templates', to: '/resume-templates' },
+  { label: 'ATS', to: '/ats-resume-checker' },
+  { label: 'Jobs', to: '/jobs' },
+];
+
 export const headerNav: Array<
   { label: string; to: string } | { label: string; items: NavLinkDef[] }
 > = [

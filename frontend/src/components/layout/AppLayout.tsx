@@ -3,6 +3,7 @@ import {
   FileText,
   Globe,
   Home,
+  LayoutTemplate,
   LogOut,
   Search,
   Settings,
@@ -23,6 +24,7 @@ import { ThemeToggle } from './ThemeToggle';
 const primaryNav = [
   { to: '/dashboard', label: 'Home', icon: Home },
   { to: '/resumes', label: 'Resumes', icon: FileText },
+  { to: '/resume-templates', label: 'Templates', icon: LayoutTemplate },
   { to: '/ats-resume-checker', label: 'ATS', icon: ShieldCheck },
   { to: '/jobs', label: 'Jobs', icon: Briefcase },
 ];
@@ -186,7 +188,13 @@ export function AppLayout() {
         className="fixed inset-x-0 bottom-0 z-sticky border-t border-border bg-surface/95 backdrop-blur-md md:hidden"
       >
         <ul className="mx-auto flex h-[var(--mobile-nav-height)] max-w-md items-stretch">
-          {[...primaryNav, { to: '/settings', label: 'Profile', icon: UserIcon }].map((item) => (
+          {[
+            { to: '/dashboard', label: 'Home', icon: Home },
+            { to: '/resumes', label: 'Resumes', icon: FileText },
+            { to: '/resume-templates', label: 'Templates', icon: LayoutTemplate },
+            { to: '/jobs', label: 'Jobs', icon: Briefcase },
+            { to: '/settings', label: 'Profile', icon: UserIcon },
+          ].map((item) => (
             <li key={item.to} className="flex-1">
               <NavLink
                 to={item.to}
