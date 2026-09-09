@@ -16,10 +16,13 @@ function installGtag(): void {
   };
 }
 
-/** Load the GA4 tag once. No-ops when no measurement ID is configured. */
+/** Load the GA4 tag once. The snippet in index.html already does this in production. */
 export function loadAnalytics(): Promise<void> {
   const measurementId = config.gaMeasurementId;
   if (!measurementId) return Promise.resolve();
+  if (window.gtag || document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
+    return Promise.resolve();
+  }
   if (loading) return loading;
 
   installGtag();

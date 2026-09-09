@@ -15,6 +15,17 @@
     />
     <link rel="canonical" href="http://localhost:5173/" />
 
+    <!-- Google Analytics: loads with the page so every visit is counted. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D8Y7YJ7R59"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-D8Y7YJ7R59');
+    </script>
+
     <!--
       Pre-paint theme resolution: reads the stored preference before React
       mounts so there is no flash of the wrong theme.
