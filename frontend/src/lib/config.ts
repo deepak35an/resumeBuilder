@@ -1,5 +1,6 @@
 const rawApiUrl = (import.meta.env.VITE_API_URL ?? 'http://localhost:8000').trim();
 const rawSiteUrl = (import.meta.env.VITE_SITE_URL ?? window.location.origin).trim();
+const rawGaId = (import.meta.env.VITE_GA_MEASUREMENT_ID ?? 'G-D8Y7YJ7R59').trim();
 
 function stripTrailingSlash(value: string): string {
   return value.endsWith('/') ? value.slice(0, -1) : value;
@@ -14,6 +15,8 @@ export const config = {
   tagline: 'Build. Check. Match. Apply.',
   supportEmail: 'hello@resumeforge.app',
   isProduction: import.meta.env.PROD,
+  /** GA4 measurement ID (`G-…`). Empty disables analytics. */
+  gaMeasurementId: rawGaId,
 } as const;
 
 /** Build an absolute API URL. Accepts `/auth/login` or `auth/login`. */

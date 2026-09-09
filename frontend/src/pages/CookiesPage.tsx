@@ -21,7 +21,7 @@ export default function CookiesPage() {
       />
       <article className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">Cookie Policy</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Last updated 7 September 2026</p>
+        <p className="mt-2 text-sm text-muted-foreground">Last updated 9 September 2026</p>
 
         <h2 className="mt-10 text-xl font-semibold text-foreground">Essential cookies</h2>
         <p className="mt-3 text-sm text-muted-foreground text-pretty">
@@ -31,8 +31,9 @@ export default function CookiesPage() {
 
         <h2 className="mt-8 text-xl font-semibold text-foreground">Optional cookies</h2>
         <p className="mt-3 text-sm text-muted-foreground text-pretty">
-          Advertising slots on blog, examples and template pages do not load third-party tracking
-          until you accept optional cookies. If you refuse, the slots stay empty placeholders.
+          Google Analytics loads for every visit so we can count how many people open the site and
+          which pages they use. That does not wait for the cookie banner. Advertising slots on
+          blog, examples and template pages stay empty until you accept optional cookies.
         </p>
 
         <h2 className="mt-8 text-xl font-semibold text-foreground">Change your mind</h2>

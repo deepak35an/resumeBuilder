@@ -68,8 +68,9 @@ export function CookieConsent() {
         <div className="min-w-0">
           <p className="text-sm font-medium text-foreground">Cookies and storage</p>
           <p className="mt-1 text-sm text-muted-foreground text-pretty">
-            We use essential storage to keep you signed in and remember your theme. Optional
-            cookies help us measure how the public pages perform. Read our{' '}
+            We use essential storage to keep you signed in and remember your theme. Page views
+            are counted so we can see which pages get traffic. Optional cookies are only for
+            advertising slots. Read our{' '}
             <Link to="/cookies" className="link-underline">
               cookie policy
             </Link>

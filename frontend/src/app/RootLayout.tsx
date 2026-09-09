@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { CommandPalette } from '@/components/command/CommandPalette';
 import { ErrorBoundary } from '@/components/feedback/ErrorBoundary';
 import { RouteFallback } from '@/components/feedback/RouteFallback';
@@ -20,6 +21,7 @@ export function RootLayout() {
   return (
     <>
       <ScrollToTop />
+      <GoogleAnalytics />
       <ErrorBoundary>
         <Suspense fallback={<RouteFallback />}>
           <Outlet />

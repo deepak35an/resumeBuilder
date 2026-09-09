@@ -11,8 +11,10 @@ COPY frontend/ ./
 # Baked at build time: Vite inlines VITE_* variables.
 ARG VITE_API_URL=/api
 ARG VITE_SITE_URL=http://localhost:8080
+ARG VITE_GA_MEASUREMENT_ID=
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_SITE_URL=$VITE_SITE_URL
+ENV VITE_GA_MEASUREMENT_ID=$VITE_GA_MEASUREMENT_ID
 RUN npm run build
 
 

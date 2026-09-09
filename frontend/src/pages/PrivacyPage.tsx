@@ -41,8 +41,9 @@ export default function PrivacyPage() {
 
         <h2 className="mt-8 text-xl font-semibold text-foreground">Cookies</h2>
         <p className="mt-3 text-sm text-muted-foreground text-pretty">
-          Essential cookies keep you signed in. Optional analytics or advertising cookies are not
-          set until you accept them in the cookie banner. See the{' '}
+          Essential cookies keep you signed in. Page views are counted for every visit so we can
+          see traffic by page. Optional advertising cookies are not set until you accept them in
+          the cookie banner. See the{' '}
           <a href="/cookies" className="link-underline">
             cookie policy
           </a>
