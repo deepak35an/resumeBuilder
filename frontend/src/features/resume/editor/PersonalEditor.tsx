@@ -1,14 +1,17 @@
 /** Contact block editor. Only a name and one contact method really matter. */
 
 import { AtSign, Github, Globe, Linkedin, MapPin, Phone, Plus, Trash2, User } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 import { Alert, Button, Field, IconButton, Input } from '@/components/ui';
+import { templateById } from '@/features/resume/templates/registry';
+import { compressResumePhoto } from '@/lib/resume-photo';
 import { createId } from '@/lib/utils';
 import { useResumeEditor } from '@/store/resumeEditor';
 import type { PersonalInfo } from '@/types/resume';
 
 const CONTACT_FIELDS: {
-  key: keyof Omit<PersonalInfo, 'links'>;
+  key: keyof Omit<PersonalInfo, 'links' | 'photo'>;
   label: string;
   placeholder: string;
   hint?: string;
@@ -76,9 +79,15 @@ const CONTACT_FIELDS: {
 
 export function PersonalEditor() {
   const personal = useResumeEditor((state) => state.doc?.data.personal);
+  const templateId = useResumeEditor((state) => state.doc?.templateId);
   const updatePersonal = useResumeEditor((state) => state.updatePersonal);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
 
   if (!personal) return null;
+
+  const photoTemplate = Boolean(templateId && templateById(templateId).supportsPhoto);
 
   const addLink = () =>
     updatePersonal({ links: [...personal.links, { id: createId(), label: '', url: '' }] });
@@ -91,8 +100,68 @@ export function PersonalEditor() {
   const removeLink = (id: string) =>
     updatePersonal({ links: personal.links.filter((link) => link.id !== id) });
 
+  const onPickPhoto = async (file: File | undefined) => {
+    if (!file) return;
+    setPhotoError(null);
+    setPhotoBusy(true);
+    try {
+      const dataUrl = await compressResumePhoto(file);
+      updatePersonal({ photo: dataUrl });
+    } catch (error) {
+      setPhotoError(error instanceof Error ? error.message : 'Could not use that image.');
+    } finally {
+      setPhotoBusy(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
+
   return (
     <div className="space-y-5">
+      <Field
+        label="Profile photo"
+        optional
+        hint={
+          photoTemplate
+            ? 'Shown on this template. JPEG, PNG or WebP, under 5 MB.'
+            : 'Saved here, but ATS-first templates hide photos so parsers still read your name as text.'
+        }
+        error={photoError ?? undefined}
+      >
+        <div className="flex items-center gap-3">
+          <div className="h-16 w-16 overflow-hidden rounded-full border border-border bg-muted">
+            {personal.photo ? (
+              <img src={personal.photo} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <span className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
+                Photo
+              </span>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="sr-only"
+              onChange={(event) => void onPickPhoto(event.target.files?.[0])}
+            />
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={photoBusy}
+              onClick={() => fileRef.current?.click()}
+            >
+              {photoBusy ? 'Processing…' : personal.photo ? 'Replace photo' : 'Upload photo'}
+            </Button>
+            {personal.photo ? (
+              <Button size="sm" variant="ghost" onClick={() => updatePersonal({ photo: '' })}>
+                Remove
+              </Button>
+            ) : null}
+          </div>
+        </div>
+      </Field>
+
       <div className="grid gap-4 sm:grid-cols-2">
         {CONTACT_FIELDS.map((field) => (
           <Field
@@ -157,8 +226,9 @@ export function PersonalEditor() {
       </div>
 
       <Alert tone="neutral" title="What to leave out">
-        Photos, date of birth, marital status and a full street address are not expected on a resume
-        in most markets, and photos in particular can trip up applicant tracking systems.
+        {photoTemplate
+          ? 'Date of birth, marital status and a full street address are still unnecessary. Photos can trip up applicant tracking systems — keep Classic ATS for online portals.'
+          : 'Photos, date of birth, marital status and a full street address are not expected on a resume in most markets, and photos in particular can trip up applicant tracking systems.'}
       </Alert>
     </div>
   );

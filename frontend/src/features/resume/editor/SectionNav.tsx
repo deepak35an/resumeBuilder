@@ -7,6 +7,7 @@ import {
   EyeOff,
   GripVertical,
   MoreVertical,
+  Palette,
   Pencil,
   Plus,
   Trash2,
@@ -23,6 +24,7 @@ import { useResumeEditor } from '@/store/resumeEditor';
 import type { ResumeSection } from '@/types/resume';
 
 export const PERSONAL_PANEL_ID = '__personal__';
+export const DESIGN_PANEL_ID = '__design__';
 
 export function SectionNav({ onNavigate }: { onNavigate?: () => void }) {
   const sections = useResumeEditor((state) => state.doc?.data.sections ?? []);
@@ -45,7 +47,7 @@ export function SectionNav({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-border p-3">
+      <div className="space-y-1 border-b border-border p-3">
         <button
           type="button"
           onClick={() => select(PERSONAL_PANEL_ID)}
@@ -58,6 +60,19 @@ export function SectionNav({ onNavigate }: { onNavigate?: () => void }) {
         >
           <User aria-hidden="true" className="h-4 w-4" />
           <span className="font-medium">Contact details</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => select(DESIGN_PANEL_ID)}
+          className={cn(
+            'flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors',
+            activeSectionId === DESIGN_PANEL_ID
+              ? 'bg-accent-subtle text-accent-strong'
+              : 'text-foreground hover:bg-muted',
+          )}
+        >
+          <Palette aria-hidden="true" className="h-4 w-4" />
+          <span className="font-medium">Design</span>
         </button>
       </div>
 

@@ -233,6 +233,7 @@ def blank_resume_data() -> dict[str, Any]:
             "portfolio": "",
             "website": "",
             "links": [],
+            "photo": "",
         },
         "sections": [make_section(item.type) for item in SECTION_CATALOG if item.default],
     }

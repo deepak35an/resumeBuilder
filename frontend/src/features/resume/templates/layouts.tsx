@@ -10,24 +10,37 @@
 import {
   ResumeContactStack,
   ResumeHeader,
+  ResumePhoto,
   ResumeSectionBlock,
   ResumeSectionShell,
   ResumeSectionBody,
   sectionHasContent,
+  type HeaderPhotoPlacement,
 } from '@/features/resume/render/primitives';
 import type { ResumeSection, SectionType } from '@/types/resume';
 import type { TemplateComponentProps } from './types';
 
 export type HeadingStyle = 'plain' | 'rule' | 'bar' | 'boxed' | 'underline-accent' | 'dot-accent' | 'pill' | 'gradient-bar' | 'inline-rule';
 
+export type PhotoPlacement = HeaderPhotoPlacement | 'sidebar-top';
+
 export interface SingleColumnOptions {
   headingStyle?: HeadingStyle;
   headerAlign?: 'left' | 'center';
   headerVariant?: 'plain' | 'banner' | 'ruled' | 'split' | 'dark-full' | 'accent-top';
+  /** Opt-in. ATS templates leave this unset so photos never appear. */
+  photoPlacement?: PhotoPlacement;
 }
 
 function visibleSections(sections: ResumeSection[]): ResumeSection[] {
   return sections.filter((section) => section.visible && sectionHasContent(section));
+}
+
+function headerPhotoPlacement(
+  placement: PhotoPlacement | undefined,
+): HeaderPhotoPlacement | undefined {
+  if (!placement || placement === 'sidebar-top') return undefined;
+  return placement;
 }
 
 export function SingleColumnLayout({
@@ -36,6 +49,7 @@ export function SingleColumnLayout({
   headingStyle = 'rule',
   headerAlign = 'left',
   headerVariant = 'plain',
+  photoPlacement,
 }: TemplateComponentProps & SingleColumnOptions) {
   return (
     <>
@@ -44,6 +58,7 @@ export function SingleColumnLayout({
         settings={settings}
         align={headerAlign}
         variant={headerVariant}
+        photoPlacement={headerPhotoPlacement(photoPlacement)}
       />
       <div style={{ marginTop: '10pt' }}>
         {visibleSections(data.sections).map((section) => (
@@ -86,6 +101,7 @@ export function SidebarLayout({
   headerAlign = 'left',
   headerVariant = 'plain',
   contactInSidebar = true,
+  photoPlacement,
 }: TemplateComponentProps & SidebarOptions) {
   const sections = visibleSections(data.sections);
   const inSidebar = sidebarSections
@@ -93,6 +109,7 @@ export function SidebarLayout({
     .filter((section): section is ResumeSection => Boolean(section));
   const sidebarIds = new Set(inSidebar.map((section) => section.id));
   const inMain = sections.filter((section) => !sidebarIds.has(section.id));
+  const showSidebarPhoto = photoPlacement === 'sidebar-top' && settings.showPhoto !== false;
 
   // Determine sidebar CSS class
   const sidebarClassName = dark
@@ -105,6 +122,11 @@ export function SidebarLayout({
 
   const sidebar = (
     <aside className={sidebarClassName} key="sidebar">
+      {showSidebarPhoto && (
+        <div className="resume-sidebar__photo">
+          <ResumePhoto personal={data.personal} settings={settings} />
+        </div>
+      )}
       {contactInSidebar && (
         <ResumeSectionShell title="Contact" settings={settings} headingStyle={headingStyle}>
           <ResumeContactStack personal={data.personal} />
@@ -130,6 +152,7 @@ export function SidebarLayout({
       align={headerAlign}
       variant={headerVariant}
       hideContact={contactInSidebar}
+      photoPlacement={headerPhotoPlacement(photoPlacement)}
     />
   );
 
@@ -178,6 +201,7 @@ export function TwoColumnLayout({
   headingStyle = 'rule',
   headerAlign = 'left',
   headerVariant = 'plain',
+  photoPlacement,
 }: TemplateComponentProps & TwoColumnOptions) {
   const sections = visibleSections(data.sections);
   const full = sections.filter((section) => fullWidthSections.includes(section.type));
@@ -197,6 +221,7 @@ export function TwoColumnLayout({
         settings={settings}
         align={headerAlign}
         variant={headerVariant}
+        photoPlacement={headerPhotoPlacement(photoPlacement)}
       />
       <div style={{ marginTop: '10pt' }}>
         {full.map((section) => (

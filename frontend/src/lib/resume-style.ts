@@ -10,6 +10,7 @@
 import type { CSSProperties } from 'react';
 
 import type { ResumeSettings } from '@/types/resume';
+import { PHOTO_SIZE_PT } from '@/lib/resume-photo';
 
 /** Physical page sizes in millimetres. */
 export const PAGE_SIZES: Record<ResumeSettings['pageSize'], { width: number; height: number }> = {
@@ -86,6 +87,7 @@ export function buildResumeStyle(
     '--resume-section-gap': `${(12 * settings.sectionSpacing).toFixed(2)}pt`,
     '--resume-entry-gap': `${(8 * settings.sectionSpacing).toFixed(2)}pt`,
     '--resume-bullet': `'${settings.bulletChar.replace(/'/g, '')}'`,
+    '--resume-photo-size': `${PHOTO_SIZE_PT[settings.photoSize] ?? PHOTO_SIZE_PT.md}pt`,
     '--resume-zoom': String(options.zoom ?? 1),
   } as CSSProperties;
 }

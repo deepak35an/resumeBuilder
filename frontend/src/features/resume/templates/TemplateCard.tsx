@@ -54,6 +54,11 @@ export function TemplateCard({
               Pro
             </Badge>
           )}
+          {template.supportsPhoto && (
+            <Badge tone="outline" size="xs" uppercase>
+              Photo
+            </Badge>
+          )}
         </div>
         <p className="text-xs text-muted-foreground">{CATEGORY_LABELS[template.category]}</p>
         <p className="text-sm text-muted-foreground text-pretty">{template.description}</p>

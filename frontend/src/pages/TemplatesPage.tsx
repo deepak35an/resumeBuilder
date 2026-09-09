@@ -54,13 +54,13 @@ export default function TemplatesPage() {
     <>
       <Seo
         title={atsOnly ? 'ATS Resume Templates' : 'Resume Templates'}
-        description="44 resume templates with live previews and honest ATS compatibility labels. Classic ATS is the default for unknown applicant systems."
+        description={`${TEMPLATES.length} resume templates with live previews and honest ATS compatibility labels. Classic ATS is the default for unknown applicant systems.`}
         path={atsOnly ? '/ats-resume-template' : '/resume-templates'}
         keywords={['resume templates', 'ats resume template', 'ats friendly resume']}
         jsonLd={[
           webPageJsonLd({
             name: atsOnly ? 'ATS Resume Templates' : 'Resume Templates',
-            description: '44 resume templates labelled with ATS compatibility.',
+            description: `${TEMPLATES.length} resume templates labelled with ATS compatibility.`,
             path: atsOnly ? '/ats-resume-template' : '/resume-templates',
           }),
           breadcrumbJsonLd([
@@ -73,7 +73,7 @@ export default function TemplatesPage() {
       <section className="border-b border-border">
         <div className="mx-auto max-w-wide px-4 py-12 sm:px-6">
           <Badge tone="outline" uppercase>
-            44 templates
+            {TEMPLATES.length} templates
           </Badge>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {atsOnly ? 'ATS-first resume templates' : 'Templates that render your real resume'}

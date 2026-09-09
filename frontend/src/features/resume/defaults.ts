@@ -2,6 +2,7 @@
 
 import { createId } from '@/lib/utils';
 import { SECTION_DEFINITIONS, createSection } from '@/features/resume/sections';
+import { initialsAvatarDataUrl } from '@/lib/resume-photo';
 import type { PersonalInfo, ResumeData, ResumeSettings } from '@/types/resume';
 
 export function emptyPersonalInfo(): PersonalInfo {
@@ -16,6 +17,7 @@ export function emptyPersonalInfo(): PersonalInfo {
     portfolio: '',
     website: '',
     links: [],
+    photo: '',
   };
 }
 
@@ -33,6 +35,9 @@ export function defaultSettings(): ResumeSettings {
     showIcons: false,
     uppercaseHeadings: true,
     bulletChar: '\u2022',
+    photoShape: 'circle',
+    photoSize: 'md',
+    showPhoto: true,
   };
 }
 
@@ -64,6 +69,7 @@ export function sampleResumeData(): ResumeData {
       portfolio: 'averychen.dev',
       website: '',
       links: [],
+      photo: initialsAvatarDataUrl('Avery Chen', '#1e3a5f'),
     },
     sections: [
       {

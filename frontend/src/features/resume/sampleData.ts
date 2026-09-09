@@ -5,6 +5,7 @@
 
 import { createId } from '@/lib/utils';
 import { defaultSettings } from '@/features/resume/defaults';
+import { initialsAvatarDataUrl } from '@/lib/resume-photo';
 import type { ResumeData, ResumeSettings } from '@/types/resume';
 
 export const SAMPLE_PERSON_NAME = 'Jordan Hale';
@@ -27,6 +28,7 @@ export function sampleResumeData(): ResumeData {
       portfolio: 'jordanhale.dev',
       website: '',
       links: [],
+      photo: initialsAvatarDataUrl(SAMPLE_PERSON_NAME, '#1e3a5f'),
     },
     sections: [
       {

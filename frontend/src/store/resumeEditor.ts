@@ -10,6 +10,8 @@ import { create } from 'zustand';
 
 import { completenessScore } from '@/features/resume/health';
 import { createSection } from '@/features/resume/sections';
+import { defaultSettings, emptyPersonalInfo } from '@/features/resume/defaults';
+import { templateById } from '@/features/resume/templates/registry';
 import { ApiError, errorMessage } from '@/lib/api-client';
 import { resumeService } from '@/services/resume.service';
 import { toast } from '@/store/toast';
@@ -200,8 +202,11 @@ export const useResumeEditor = create<EditorState>((set, get) => {
         doc: {
           title: resume.title,
           templateId: resume.templateId,
-          data: resume.data,
-          settings: resume.settings,
+          data: {
+            ...resume.data,
+            personal: { ...emptyPersonalInfo(), ...resume.data.personal },
+          },
+          settings: { ...defaultSettings(), ...resume.settings },
         },
         saveState: 'saved',
         saveError: null,
@@ -235,7 +240,15 @@ export const useResumeEditor = create<EditorState>((set, get) => {
     },
 
     setTemplate(templateId) {
-      commit((doc) => ({ ...doc, templateId }), { immediate: true });
+      const defaults = templateById(templateId).settingsDefaults;
+      commit(
+        (doc) => ({
+          ...doc,
+          templateId,
+          settings: defaults ? { ...doc.settings, ...defaults } : doc.settings,
+        }),
+        { immediate: true },
+      );
     },
 
     updateSettings(patch) {

@@ -52,6 +52,9 @@ export interface Link {
   url: string;
 }
 
+export type PhotoShape = 'circle' | 'rounded' | 'square';
+export type PhotoSize = 'sm' | 'md' | 'lg';
+
 /** All fields optional: we never require unnecessary personal information. */
 export interface PersonalInfo {
   fullName: string;
@@ -64,6 +67,8 @@ export interface PersonalInfo {
   portfolio: string;
   website: string;
   links: Link[];
+  /** Compressed JPEG data URL. Empty when unused. Only photo templates render it. */
+  photo: string;
 }
 
 export interface ExperienceItem {
@@ -256,6 +261,9 @@ export interface ResumeSettings {
   showIcons: boolean;
   uppercaseHeadings: boolean;
   bulletChar: string;
+  photoShape: PhotoShape;
+  photoSize: PhotoSize;
+  showPhoto: boolean;
 }
 
 export interface ResumeData {

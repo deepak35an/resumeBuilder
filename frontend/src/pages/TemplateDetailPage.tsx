@@ -125,6 +125,11 @@ export default function TemplateDetailPage() {
                 Pro
               </Badge>
             )}
+            {local.supportsPhoto && (
+              <Badge tone="outline" uppercase>
+                Photo
+              </Badge>
+            )}
             {remote.data?.isRecommended && <Badge tone="accent">Recommended</Badge>}
           </div>
 

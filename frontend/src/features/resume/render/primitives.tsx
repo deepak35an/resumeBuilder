@@ -17,6 +17,7 @@ import {
   formatDateRange,
   formatResumeDate,
 } from '@/features/resume/formatting';
+import { initialsFromName } from '@/lib/resume-photo';
 import { cn } from '@/lib/utils';
 import type {
   CertificationsSection,
@@ -39,6 +40,100 @@ export interface RenderContext {
   settings: ResumeSettings;
 }
 
+export type HeaderPhotoPlacement = 'header-left' | 'header-right' | 'above-name';
+
+export interface ResumePhotoProps {
+  personal: PersonalInfo;
+  settings: ResumeSettings;
+  className?: string;
+}
+
+/** Print-safe portrait. Photo templates always render this; ATS templates never do. */
+export function ResumePhoto({ personal, settings, className }: ResumePhotoProps) {
+  if (settings.showPhoto === false) return null;
+
+  const shape = settings.photoShape ?? 'circle';
+  const src = personal.photo?.trim() ?? '';
+  const initials = initialsFromName(personal.fullName);
+  const label = personal.fullName ? `${personal.fullName} portrait` : 'Profile photo';
+
+  return (
+    <div
+      className={cn(
+        'resume-photo',
+        shape === 'circle' && 'resume-photo--circle',
+        shape === 'rounded' && 'resume-photo--rounded',
+        shape === 'square' && 'resume-photo--square',
+        className,
+      )}
+    >
+      {src ? (
+        <img src={src} alt={label} />
+      ) : (
+        <span className="resume-photo__initials" aria-hidden="true">
+          {initials}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function HeaderIdentity({
+  personal,
+  photo,
+  photoPlacement,
+  hideContact,
+  contactJustify,
+}: {
+  personal: PersonalInfo;
+  photo: ReactNode;
+  photoPlacement?: HeaderPhotoPlacement;
+  hideContact: boolean;
+  contactJustify?: 'center' | 'flex-start';
+}) {
+  const contacts = contactLine(personal);
+  const copy = (
+    <div className="resume-header__copy">
+      <div className="resume-name">{personal.fullName || 'Your Name'}</div>
+      {personal.title && <div className="resume-role">{personal.title}</div>}
+      {!hideContact && contacts.length > 0 && (
+        <div
+          className="resume-contact"
+          style={{ marginTop: '4pt', justifyContent: contactJustify }}
+        >
+          {contacts.map((entry, index) => (
+            <span key={`${entry}-${index}`}>
+              {index > 0 && <span className="resume-contact__sep" aria-hidden="true">{' | '}</span>}
+              <span>{displayUrl(entry)}</span>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  if (!photo || photoPlacement === 'above-name') {
+    return (
+      <>
+        {photo}
+        {copy}
+      </>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        'resume-header__row',
+        photoPlacement === 'header-right' && 'resume-header__row--reverse',
+      )}
+    >
+      {photo}
+      {copy}
+    </div>
+  );
+}
+
 // --- Header -----------------------------------------------------------------
 
 export interface ResumeHeaderProps {
@@ -48,25 +143,47 @@ export interface ResumeHeaderProps {
   variant?: 'plain' | 'banner' | 'ruled' | 'split' | 'dark-full' | 'accent-top';
   /** Sidebar layouts render contact details in the sidebar instead. */
   hideContact?: boolean;
+  /** Photo templates only. ATS layouts omit this. */
+  photoPlacement?: HeaderPhotoPlacement;
 }
 
 export function ResumeHeader({
   personal,
+  settings,
   align = 'left',
   variant = 'plain',
   hideContact = false,
+  photoPlacement,
 }: ResumeHeaderProps) {
   const contacts = contactLine(personal);
+  const photo =
+    photoPlacement && settings.showPhoto !== false ? (
+      <ResumePhoto personal={personal} settings={settings} />
+    ) : null;
+  const stacked = photoPlacement === 'above-name';
+  const contactJustify = align === 'center' || stacked ? 'center' : 'flex-start';
 
-  // Split header: two-panel layout (dark left name, light right contact)
   if (variant === 'split') {
     return (
-      <header className="resume-header--split">
+      <header className={cn('resume-header--split', photo && 'resume-header--with-photo')}>
         <div className="resume-header__left">
-          <div className="resume-name">{personal.fullName || 'Your Name'}</div>
-          {personal.title && <div className="resume-role">{personal.title}</div>}
+          {photoPlacement === 'header-left' || photoPlacement === 'above-name' ? (
+            <HeaderIdentity
+              personal={personal}
+              photo={photo}
+              photoPlacement={photoPlacement}
+              hideContact
+              contactJustify="flex-start"
+            />
+          ) : (
+            <>
+              <div className="resume-name">{personal.fullName || 'Your Name'}</div>
+              {personal.title && <div className="resume-role">{personal.title}</div>}
+            </>
+          )}
         </div>
         <div className="resume-header__right">
+          {photoPlacement === 'header-right' && photo}
           {contacts.length > 0 && (
             <div className="resume-contact">
               {contacts.map((entry, index) => (
@@ -87,25 +204,19 @@ export function ResumeHeader({
         variant === 'banner' && 'resume-header--banner',
         variant === 'dark-full' && 'resume-header--dark-full',
         variant === 'accent-top' && 'resume-header--accent-top',
-        align === 'center' && 'text-center',
+        (align === 'center' || stacked) && 'text-center',
+        photo && 'resume-header--with-photo',
+        stacked && 'resume-header--photo-above',
       )}
       style={variant === 'ruled' ? { borderBottom: '1pt solid var(--resume-rule)', paddingBottom: '6pt' } : undefined}
     >
-      <div className="resume-name">{personal.fullName || 'Your Name'}</div>
-      {personal.title && <div className="resume-role">{personal.title}</div>}
-      {!hideContact && contacts.length > 0 && (
-        <div
-          className="resume-contact"
-          style={{ marginTop: '4pt', justifyContent: align === 'center' ? 'center' : undefined }}
-        >
-          {contacts.map((entry, index) => (
-            <span key={`${entry}-${index}`}>
-              {index > 0 && <span className="resume-contact__sep" aria-hidden="true">{' | '}</span>}
-              <span>{displayUrl(entry)}</span>
-            </span>
-          ))}
-        </div>
-      )}
+      <HeaderIdentity
+        personal={personal}
+        photo={photo}
+        photoPlacement={photoPlacement}
+        hideContact={hideContact}
+        contactJustify={contactJustify}
+      />
     </header>
   );
 }

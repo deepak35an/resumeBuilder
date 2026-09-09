@@ -121,7 +121,14 @@ export function TemplatePickerModal({
                       : 'border-border hover:border-border-strong',
                   )}
                 >
-                  <span className="text-sm font-semibold text-foreground">{template.name}</span>
+                  <span className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-sm font-semibold text-foreground">{template.name}</span>
+                    {template.supportsPhoto && (
+                      <Badge tone="outline" size="xs" uppercase>
+                        Photo
+                      </Badge>
+                    )}
+                  </span>
                   <span className="text-xs text-muted-foreground">{CATEGORY_LABELS[template.category]}</span>
                   <span className="text-xs text-muted-foreground text-pretty">{template.description}</span>
                   <Badge tone={template.atsRating === 'excellent' ? 'success' : 'warning'} size="xs" className="mt-auto w-fit">

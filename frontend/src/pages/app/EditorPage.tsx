@@ -4,11 +4,12 @@ import { useParams, useSearchParams } from 'react-router-dom';
 
 import { Seo } from '@/components/seo/Seo';
 import { Alert, Button, IconButton, Input, Skeleton } from '@/components/ui';
+import { DesignPanel } from '@/features/resume/editor/DesignPanel';
 import { ExportReviewModal } from '@/features/resume/editor/ExportReviewModal';
 import { PersonalEditor } from '@/features/resume/editor/PersonalEditor';
 import { ResumeCopilotSheet } from '@/features/resume/editor/ResumeCopilotSheet';
 import { ResumeHealth } from '@/features/resume/editor/ResumeHealth';
-import { PERSONAL_PANEL_ID, SectionNav } from '@/features/resume/editor/SectionNav';
+import { DESIGN_PANEL_ID, PERSONAL_PANEL_ID, SectionNav } from '@/features/resume/editor/SectionNav';
 import { SectionEditor } from '@/features/resume/editor/SectionEditor';
 import { VersionsSheet } from '@/features/resume/editor/VersionsSheet';
 import { ResumePreview } from '@/features/resume/render/ResumePreview';
@@ -115,7 +116,8 @@ export default function EditorPage() {
     );
   }
 
-  const editingPersonal = activeSectionId === PERSONAL_PANEL_ID || !section;
+  const editingDesign = activeSectionId === DESIGN_PANEL_ID;
+  const editingPersonal = activeSectionId === PERSONAL_PANEL_ID || (!section && !editingDesign);
 
   return (
     <div className="flex h-[calc(100vh-3.5rem)] flex-col bg-background">
@@ -172,7 +174,9 @@ export default function EditorPage() {
         <section
           className={`${mobilePreview ? 'hidden' : 'flex'} min-h-0 flex-col overflow-y-auto border-r border-border p-4 md:flex`}
         >
-          {editingPersonal ? (
+          {editingDesign ? (
+            <DesignPanel />
+          ) : editingPersonal ? (
             <PersonalEditor />
           ) : (
             section && (

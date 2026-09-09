@@ -41,6 +41,8 @@ export interface TemplateDefinition {
   bestFor: string[];
   /** Applied when a resume first switches to this template. */
   settingsDefaults?: Partial<ResumeSettings>;
+  /** Photo templates only. ATS-first layouts never set this. */
+  supportsPhoto?: boolean;
   component: TemplateComponent;
 }
 

@@ -67,7 +67,8 @@
 
   .resume-entry,
   .resume-bullets > li,
-  .resume-skills__row {
+  .resume-skills__row,
+  .resume-photo {
     break-inside: avoid;
     page-break-inside: avoid;
   }

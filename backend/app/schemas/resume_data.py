@@ -89,6 +89,7 @@ class PersonalInfo(Model):
     portfolio: str = ""
     website: str = ""
     links: list[Link] = Field(default_factory=list)
+    photo: str = Field("", max_length=400_000)
 
 
 # --- Section item types -----------------------------------------------------
@@ -276,6 +277,8 @@ Section = Annotated[
 
 DateFormat = Literal["short-month", "long-month", "numeric", "year-only"]
 PageSize = Literal["a4", "letter"]
+PhotoShape = Literal["circle", "rounded", "square"]
+PhotoSize = Literal["sm", "md", "lg"]
 
 
 class ResumeSettings(Model):
@@ -291,6 +294,9 @@ class ResumeSettings(Model):
     show_icons: bool = Field(False, alias="showIcons")
     uppercase_headings: bool = Field(True, alias="uppercaseHeadings")
     bullet_char: str = Field("•", alias="bulletChar")
+    photo_shape: PhotoShape = Field("circle", alias="photoShape")
+    photo_size: PhotoSize = Field("md", alias="photoSize")
+    show_photo: bool = Field(True, alias="showPhoto")
 
 
 class ResumeData(Model):
