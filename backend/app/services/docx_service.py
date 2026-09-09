@@ -1,17 +1,21 @@
-"""ATS-safe DOCX export. Visual two-column layouts are flattened."""
+"""ATS-safe DOCX export. When preview HTML is provided, layout follows the template."""
 
 from __future__ import annotations
 
 import io
+import logging
 import re
 from typing import Any
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
-from docx.shared import Inches, Pt, RGBColor
+from docx.shared import Pt, RGBColor
 
+from app.services.html_docx import apply_page_setup, docx_from_resume_html
 from app.services.resume_text import format_date_range
+
+logger = logging.getLogger("resumeforge.docx")
 
 
 def _safe_filename(personal: dict[str, Any], ext: str) -> str:
@@ -20,15 +24,28 @@ def _safe_filename(personal: dict[str, Any], ext: str) -> str:
     return f"{slug}_Resume.{ext}"
 
 
-def build_docx(data: dict[str, Any], settings: dict[str, Any] | None = None) -> tuple[bytes, str]:
+def build_docx(
+    data: dict[str, Any],
+    settings: dict[str, Any] | None = None,
+    *,
+    html_document: str | None = None,
+    template_id: str | None = None,  # noqa: ARG001 — reserved for catalog-aware fallbacks
+) -> tuple[bytes, str]:
     settings = settings or {}
-    document = Document()
-    section = document.sections[0]
-    margin = {"narrow": 0.5, "normal": 0.7, "wide": 1.0}.get(settings.get("margin", "normal"), 0.7)
-    for edge in ("top_margin", "bottom_margin", "left_margin", "right_margin"):
-        setattr(section, edge, Inches(margin))
-
     personal = data.get("personal") or {}
+    if html_document:
+        try:
+            rendered = docx_from_resume_html(html_document, settings)
+            if rendered is not None:
+                buffer = io.BytesIO()
+                rendered.save(buffer)
+                return buffer.getvalue(), _safe_filename(personal, "docx")
+        except Exception:  # noqa: BLE001
+            logger.warning("Template HTML DOCX failed; using structured fallback", exc_info=True)
+
+    document = Document()
+    apply_page_setup(document, settings)
+
     name = personal.get("fullName") or "Resume"
     heading = document.add_paragraph()
     run = heading.add_run(name)

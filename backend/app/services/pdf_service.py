@@ -11,6 +11,7 @@ import logging
 from typing import Any
 
 from app.core.config import settings
+from app.core.errors import ServiceUnavailableError
 from app.services.docx_service import _safe_filename
 from app.services.resume_text import format_date_range, to_plain_text
 
@@ -65,8 +66,31 @@ def build_pdf(
         try:
             return _playwright_pdf(html_document, page_size), filename
         except Exception:  # noqa: BLE001
-            logger.warning("Playwright PDF failed; using text fallback", exc_info=True)
+            logger.warning("Playwright PDF failed; client should print the live template", exc_info=True)
+            raise ServiceUnavailableError(
+                "The PDF engine is unavailable. Save as PDF from the print dialog to keep the template layout.",
+                code="pdf_engine_unavailable",
+            ) from None
+    if html_document:
+        raise ServiceUnavailableError(
+            "The PDF engine is unavailable. Save as PDF from the print dialog to keep the template layout.",
+            code="pdf_engine_unavailable",
+        )
     return _simple_pdf(data, settings_doc or {}, page_size), filename
+
+
+def _launch_chromium(playwright):
+    last_error: Exception | None = None
+    for kwargs in (
+        {"headless": True},
+        {"headless": True, "channel": "msedge"},
+        {"headless": True, "channel": "chrome"},
+    ):
+        try:
+            return playwright.chromium.launch(**kwargs)
+        except Exception as exc:  # noqa: BLE001
+            last_error = exc
+    raise last_error or RuntimeError("Could not launch Chromium")
 
 
 def _playwright_pdf(html_document: str, page_size: str) -> bytes:
@@ -74,11 +98,18 @@ def _playwright_pdf(html_document: str, page_size: str) -> bytes:
 
     format_name = "Letter" if page_size == "letter" else "A4"
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
-        page = browser.new_page()
-        page.set_content(html_document, wait_until="networkidle")
-        pdf = page.pdf(format=format_name, print_background=True, prefer_css_page_size=True)
-        browser.close()
+        browser = _launch_chromium(playwright)
+        try:
+            page = browser.new_page()
+            page.set_content(html_document, wait_until="load", timeout=30_000)
+            pdf = page.pdf(
+                format=format_name,
+                print_background=True,
+                prefer_css_page_size=True,
+                margin={"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"},
+            )
+        finally:
+            browser.close()
     return pdf
 
 

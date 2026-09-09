@@ -42,8 +42,11 @@
     margin: 0 !important;
     width: auto !important;
     min-height: 0 !important;
-    break-after: page;
-    page-break-after: always;
+    height: auto !important;
+    overflow: visible !important;
+    transform: none !important;
+    break-after: auto;
+    page-break-after: auto;
   }
 
   .resume-page:last-child {
@@ -104,7 +107,10 @@
   margin: 0;
   width: auto;
   min-height: 0;
-  break-after: page;
+  height: auto;
+  overflow: visible;
+  transform: none;
+  break-after: auto;
 }
 
 .pdf-render .resume-page:last-child {

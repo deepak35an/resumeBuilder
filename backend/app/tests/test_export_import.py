@@ -87,3 +87,57 @@ def test_blank_resume_helper():
     data = blank_resume_data()
     assert data["personal"]["fullName"] == ""
     assert any(section["type"] == "experience" for section in data["sections"])
+
+
+def test_pdf_html_without_playwright_asks_for_browser_print():
+    from app.core.errors import ServiceUnavailableError
+
+    html = """<!doctype html><html class="pdf-render"><body>
+    <div class="resume-document"><div class="resume-page"><div class="resume-name">Ada</div></div></div>
+    </body></html>"""
+    try:
+        pdf, _name = build_pdf({"personal": {"fullName": "Ada"}}, {"pageSize": "a4"}, html_document=html)
+    except ServiceUnavailableError as exc:
+        assert exc.code == "pdf_engine_unavailable"
+        return
+    assert pdf.startswith(b"%PDF")
+
+
+def test_docx_follows_academic_template_html():
+    import io
+
+    from docx import Document
+
+    html = """<!doctype html><html class="pdf-render"><body>
+    <div class="resume-document" style="--resume-accent:#1e3a5f; --resume-font-size:11pt">
+      <div class="resume-page">
+        <header style="border-bottom: 1pt solid #d1d5db">
+          <div class="resume-name">Ada Lovelace</div>
+          <div class="resume-role">Mathematician</div>
+        </header>
+        <section class="resume-section">
+          <h2 class="resume-section__title">Education</h2>
+          <hr class="resume-section__rule"/>
+          <div class="resume-entry">
+            <div class="resume-entry__title">B.A. Mathematics</div>
+            <div class="resume-entry__subtitle">University of London</div>
+          </div>
+        </section>
+        <section class="resume-section">
+          <h2 class="resume-section__title">Summary</h2>
+          <hr class="resume-section__rule"/>
+          <p>Wrote the first algorithm intended for a machine.</p>
+        </section>
+      </div>
+    </div></body></html>"""
+    data = {"personal": {"fullName": "Ada Lovelace"}}
+    payload, name = build_docx(data, {"pageSize": "a4", "fontSize": 11}, html_document=html)
+    assert payload.startswith(b"PK")
+    assert name.endswith(".docx")
+    document = Document(io.BytesIO(payload))
+    text = "\n".join(paragraph.text for paragraph in document.paragraphs)
+    assert "Ada Lovelace" in text
+    assert "Education" in text
+    assert "B.A. Mathematics" in text
+    assert "University of London" in text
+    assert "first algorithm" in text

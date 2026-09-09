@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Badge, IconButton, Tooltip } from '@/components/ui';
 import { ResumeDocument } from '@/features/resume/render/ResumeDocument';
+import { RESUME_PRINT_ROOT_ID } from '@/lib/resume-export-html';
 import { pageSizePx } from '@/lib/resume-style';
 import { clamp, cn } from '@/lib/utils';
 import type { ResumeData, ResumeSettings } from '@/types/resume';
@@ -128,7 +129,7 @@ export function ResumePreview({
             templateId={templateId}
             zoom={zoom}
             onPageCountChange={setPageCount}
-            id="resume-print-root"
+            id={RESUME_PRINT_ROOT_ID}
           />
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Alert, Button, Modal, Progress } from '@/components/ui';
 import { healthChecks } from '@/features/resume/health';
 import { ApiError, errorMessage } from '@/lib/api-client';
+import { serializeResumeForExport, printResumeHtml } from '@/lib/resume-export-html';
 import { downloadBlob, toFileNamePart } from '@/lib/utils';
 import { exportService } from '@/services/export.service';
 import { useResumeEditor } from '@/store/resumeEditor';
@@ -31,22 +32,34 @@ export function ExportReviewModal({
     setBusy(kind);
     try {
       await save({ silent: true });
-      const result =
-        kind === 'pdf'
-          ? await exportService.pdf({
-              resumeId: resumeId ?? undefined,
-              data: doc.data,
-              settings: doc.settings,
-              templateId: doc.templateId,
-            })
-          : await exportService.docx({
-              resumeId: resumeId ?? undefined,
-              data: doc.data,
-              settings: doc.settings,
-              templateId: doc.templateId,
-            });
-      downloadBlob(result.blob, result.filename ?? `${filenameBase}_Resume.${kind}`);
-      toast.success(kind === 'pdf' ? 'PDF ready' : 'DOCX ready');
+      const html = serializeResumeForExport({ pageSize: doc.settings.pageSize });
+      const payload = {
+        resumeId: resumeId ?? undefined,
+        data: doc.data,
+        settings: doc.settings,
+        templateId: doc.templateId,
+        html: html || undefined,
+      };
+      try {
+        const result = kind === 'pdf' ? await exportService.pdf(payload) : await exportService.docx(payload);
+        downloadBlob(result.blob, result.filename ?? `${filenameBase}_Resume.${kind}`);
+        toast.success(kind === 'pdf' ? 'PDF ready' : 'DOCX ready');
+      } catch (error) {
+        if (
+          kind === 'pdf' &&
+          html &&
+          error instanceof ApiError &&
+          error.code === 'pdf_engine_unavailable'
+        ) {
+          printResumeHtml(html);
+          toast.info(
+            'Save as PDF in the print dialog',
+            'Choose “Save as PDF” so the file matches the template in the preview.',
+          );
+          return;
+        }
+        throw error;
+      }
     } catch (error) {
       if (error instanceof ApiError && error.requiresUpgrade) {
         toast.warning('Export limit reached', error.message);
@@ -108,7 +121,8 @@ export function ExportReviewModal({
       )}
 
       <Alert tone="neutral" className="mt-4">
-        Review imported or AI-generated wording before you send the file. Filename:{' '}
+        Review imported or AI-generated wording before you send the file. The PDF
+        and DOCX match the template in the preview. Filename:{' '}
         <span className="font-medium text-foreground">{filenameBase}_Resume.pdf</span>
       </Alert>
     </Modal>
