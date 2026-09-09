@@ -9,11 +9,13 @@ declare global {
 
 let loading: Promise<void> | null = null;
 
-function installGtag(): void {
+function installGtag(): (...args: unknown[]) => void {
   window.dataLayer = window.dataLayer ?? [];
-  window.gtag = function gtag(...args: unknown[]) {
+  const gtag = (...args: unknown[]) => {
     window.dataLayer?.push(args);
   };
+  window.gtag = gtag;
+  return gtag;
 }
 
 /** Load the GA4 tag once. The snippet in index.html already does this in production. */
@@ -25,9 +27,9 @@ export function loadAnalytics(): Promise<void> {
   }
   if (loading) return loading;
 
-  installGtag();
-  window.gtag?.('js', new Date());
-  window.gtag?.('config', measurementId, {
+  const gtag = installGtag();
+  gtag('js', new Date());
+  gtag('config', measurementId, {
     anonymize_ip: true,
     send_page_view: false,
   });
